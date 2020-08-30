@@ -3,64 +3,60 @@
 namespace PMRAtk\tests\phpunit\Data;
 
 use atk4\data\Exception;
-use PMRAtk\tests\phpunit\TestCase;
-use PMRAtk\tests\TestClasses\BaseModelClasses\BaseModelA;
-use PMRAtk\tests\TestClasses\BaseModelClasses\SecondaryModelA;
+use atk4\core\AtkPhpunit\TestCase;
+use atk4\data\Persistence;
+use secondarymodelforatk\tests\testmodels\Person;
+use secondarymodelforatk\tests\testmodels\Email;
 
 
 class SecondaryModelTest extends TestCase {
 
     public function testGetParentObject() {
-        $baseModelA = new BaseModelA(self::$app->db);
-        $baseModelA->save();
-        $secondaryModelA = new SecondaryModelA(self::$app->db);
+        $persistence = new Persistence\Array_();
+        $model = new Person($persistence);
+        $model->save();
+        $email = new Email($persistence);
         //no model_class set
-        $this->assertEquals(null, $secondaryModelA->getParentObject());
+        self::assertEquals(null, $email->getParentObject());
 
         //model_class, but no id
-        $secondaryModelA->set('model_class', BaseModelA::class);
-        $this->assertEquals(null, $secondaryModelA->getParentObject());
+        $email->set('model_class', Person::class);
+        self::assertEquals(null, $email->getParentObject());
 
         //Record with valid id
-        $secondaryModelA->set('model_id', $baseModelA->get('id'));
-        $parentObject = $secondaryModelA->getParentObject();
-        $this->assertTrue($parentObject instanceOf BaseModelA);
-        $this->assertTrue($parentObject->loaded());
+        $email->set('model_id', $model->get('id'));
+        $parentObject = $email->getParentObject();
+        self::assertTrue($parentObject instanceOf Person);
+        self::assertTrue($parentObject->loaded());
+        self::assertSame($model->get('id'), $parentObject->get('id'));
     }
 
     public function testGetParentObjectExceptionInvalidModelClass() {
-        $baseModelA = new BaseModelA(self::$app->db);
-        $baseModelA->save();
-        $secondaryModelA = new SecondaryModelA(self::$app->db);
-        $secondaryModelA->set('model_class', 'Duggu');
-        $secondaryModelA->set('model_id', $baseModelA->get('id'));
-        $this->expectException(Exception::class);
-        $secondaryModelA->getParentObject();
+        $persistence = new Persistence\Array_();
+        $model = new Person($persistence);
+        $model->save();
+        $email = new Email($persistence);
+        $email->set('model_class', 'Duggu');
+        $email->set('model_id', $model->get('id'));
+        self::expectException(Exception::class);
+        $email->getParentObject();
     }
 
     public function testGetParentObjectExceptionInvalidID() {
-        $secondaryModelA = new SecondaryModelA(self::$app->db);
-        $secondaryModelA->set('model_class', BaseModelA::class);
-        $secondaryModelA->set('model_id', 333);
-        $this->expectException(Exception::class);
-        $secondaryModelA->getParentObject();
+        $email = new Email(new Persistence\Array_());
+        $email->set('model_class', Person::class);
+        $email->set('model_id', 333);
+        self::expectException(Exception::class);
+        $email->getParentObject();
     }
 
     public function testSetParentObjectDataDuringInit() {
-        $bm = new BaseModelA(self::$app->db);
-        $bm->save();
-        $e = new SecondaryModelA(self::$app->db, ['parentObject' => $bm]);
-        $g = $e->getParentObject();
-        $this->assertTrue($g instanceOf BaseModelA);
-    }
-
-    public function testTrimValueOnSave() {
-        $e = new SecondaryModelA(self::$app->db);
-        $e->set('value', '  whitespace@beforeandafter.com  ');
-        $e->save();
-        $this->assertSame(
-            $e->get('value'),
-            'whitespace@beforeandafter.com'
-        );
+        $persistence = new Persistence\Array_();
+        $model = new Person($persistence);
+        $model->save();
+        $email = new Email($persistence, ['parentObject' => $model]);
+        $parentObject = $email->getParentObject();
+        self::assertTrue($parentObject instanceOf Person);
+        self::assertSame($model->get('id'), $parentObject->get('id'));
     }
 }
