@@ -1,0 +1,26 @@
+{
+  "name": "philippgrashoff/secondarymodelforatk",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config":{
+    "platform":{
+      "php":"7.4"
+    }
+  },
+  "require":{
+    "atk4/data": "2.2.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": ">8"
+  },
+  "autoload":{
+    "psr-4":{
+      "secondarymodelforatk\\":"src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "secondarymodelforatk\\tests\\": "tests"
+    }
+  }
+}
