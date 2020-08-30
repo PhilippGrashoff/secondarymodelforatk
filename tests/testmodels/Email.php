@@ -13,4 +13,11 @@ class Email extends SecondaryModel {
     use SecondaryModelRelationTrait;
 
     public $table = 'email';
+
+    public function init(): void
+    {
+        parent::init();
+
+        $this->addField('some_other_field');
+    }
 }

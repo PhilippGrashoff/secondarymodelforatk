@@ -37,6 +37,22 @@ class SecondaryModelRelationTraitTest extends TestCase {
         );
     }
 
+    public function testaddSBMRecordWithAdditionalField() {
+        $persistence = new Persistence\Array_();
+        $emailCount = (int) (new Email($persistence))->action('count')->getOne();
+        $model = new Person($persistence);
+        $model->save();
+        $email = $model->addSecondaryModelRecord(
+            Email::class,
+            '1234567899',
+            ['some_other_field' => 'SomeValue']
+        );
+        self::assertSame(
+            'SomeValue',
+            $email->get('some_other_field')
+        );
+    }
+
     public function testaddSBMRecordWithNonStandardModelIdAndModelClassFields() {
         $model = new Admin(new Persistence\Array_());
         $model->set('person_id', 456);

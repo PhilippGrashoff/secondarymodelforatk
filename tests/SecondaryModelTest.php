@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace PMRAtk\tests\phpunit\Data;
+namespace secondarymodelforatk\tests;
 
 use atk4\data\Exception;
 use atk4\core\AtkPhpunit\TestCase;
