@@ -4,13 +4,8 @@ namespace secondarymodelforatk;
 
 use atk4\data\Model;
 use secondarymodelforatk\Reference\HasManySecondaryModel;
-use secondarymodelforatk\SecondaryModel;
 
 
-/**
- * EPA is short for Email, Address, Phone. This adds functions to add,
- * alter and delete related EPAs
- */
 trait SecondaryModelRelationTrait
 {
 
