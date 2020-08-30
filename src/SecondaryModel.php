@@ -8,7 +8,7 @@ use atk4\data\Model;
 abstract class SecondaryModel extends Model
 {
 
-    public ?Model $parentObject = null;
+    public $parentObject = null;
 
     public function init(): void
     {
