@@ -16,7 +16,7 @@ class Person extends Model {
     public function init(): void
     {
          parent::init();
-
+         $this->addField('name');
          $this->addSecondaryModelHasMany(Email::class);
     }
 }

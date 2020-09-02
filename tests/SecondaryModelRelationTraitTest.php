@@ -5,18 +5,20 @@ namespace secondarymodelforatk\tests;
 use atk4\data\Exception;
 use atk4\core\AtkPhpunit\TestCase;
 use atk4\data\Persistence;
+use atk4\schema\Migration;
+use atk4\schema\PhpunitTestCase;
 use secondarymodelforatk\tests\testmodels\Admin;
 use secondarymodelforatk\tests\testmodels\Email;
 use secondarymodelforatk\tests\testmodels\Person;
 
-class SecondaryModelRelationTraitTest extends TestCase {
+class SecondaryModelRelationTraitTest extends PhpunitTestCase {
 
     public function testHasManyRelationIsAdded() {
         $model = new Person(new Persistence\Array_());
         self::assertTrue($model->hasRef(Email::class));
     }
 
-    public function testaddSBMRecord() {
+    public function testaddSecondaryModelRecord() {
         $persistence = new Persistence\Array_();
         $emailCount = (int) (new Email($persistence))->action('count')->getOne();
         $model = new Person($persistence);
@@ -37,7 +39,7 @@ class SecondaryModelRelationTraitTest extends TestCase {
         );
     }
 
-    public function testaddSBMRecordWithAdditionalField() {
+    public function testaddSecondaryModelRecordWithAdditionalField() {
         $persistence = new Persistence\Array_();
         $emailCount = (int) (new Email($persistence))->action('count')->getOne();
         $model = new Person($persistence);
@@ -53,7 +55,7 @@ class SecondaryModelRelationTraitTest extends TestCase {
         );
     }
 
-    public function testaddSBMRecordWithNonStandardModelIdAndModelClassFields() {
+    public function testaddSecondaryModelRecordWithNonStandardModelIdAndModelClassFields() {
         $model = new Admin(new Persistence\Array_());
         $model->set('person_id', 456);
         $model->save();
@@ -69,13 +71,13 @@ class SecondaryModelRelationTraitTest extends TestCase {
         );
     }
 
-    public function testaddSBMRecordExceptionInvalidClassName() {
+    public function testaddSecondaryModelRecordExceptionInvalidClassName() {
         $model = new Person(new Persistence\Array_());
         self::expectException(Exception::class);
         $model->addSecondaryModelRecord('SomeNonDescendantOfSecondaryModel', 'somevalue');
     }
 
-    public function testaddSBMRecordAddDeleteTrueDeletesSBM() {
+    public function testaddSecondaryModelRecordAddDeleteTrueDeletesSBM() {
         $persistence = new Persistence\Array_();
         $emailCount = (int) (new Email($persistence))->action('count')->getOne();
         $model = new Person($persistence);
@@ -92,7 +94,7 @@ class SecondaryModelRelationTraitTest extends TestCase {
         );
     }
 
-    public function testaddSBMRecordAddDeleteFalseNotDeletesSBM() {
+    public function testaddSecondaryModelRecordAddDeleteFalseNotDeletesSBM() {
         $persistence = new Persistence\Array_();
         $emailCount = (int) (new Email($persistence))->action('count')->getOne();
         $model = new Admin($persistence);
@@ -109,14 +111,14 @@ class SecondaryModelRelationTraitTest extends TestCase {
         );
     }
 
-    public function testaddSBMRecordSBMIsReturned() {
+    public function testaddSecondaryModelRecordSBMIsReturned() {
         $model = new Person(new Persistence\Array_());
         $model->save();
         $email = $model->addSecondaryModelRecord(Email::class, '1234567899');
         self::assertInstanceOf(Email::class, $email);
     }
 
-    public function testaddSBMRecordIfThisNotLoadedAfterSaveHookAddsSBM() {
+    public function testaddSecondaryModelRecordIfThisNotLoadedAfterSaveHookAddsSBM() {
         $persistence = new Persistence\Array_();
         $emailCount = (int) (new Email($persistence))->action('count')->getOne();
         $model = new Person($persistence);
@@ -135,5 +137,38 @@ class SecondaryModelRelationTraitTest extends TestCase {
             1,
             $model->ref(Email::class)->action('count')->getOne()
         );
+    }
+    
+    public function testgetFirstSecondaryModelRecord() {
+        $model = new Person(new Persistence\Array_());
+        $model->save();
+        self::assertNull($model->getFirstSecondaryModelRecord(Email::class));
+        $email = $model->addSecondaryModelRecord(Email::class, '1234567899');
+        $result = $model->getFirstSecondaryModelRecord(Email::class);
+        self::assertInstanceOf(Email::class, $result);
+        self::assertSame(
+            $email->get('id'),
+            $result->get('id')
+        );
+    }
+
+    public function testgetAllSecondaryModelValuesAsArray() {
+        $model = new Person(new Persistence\Array_());
+        $model->save();
+        self::assertSame(
+            [],
+            $model->getAllSecondaryModelValuesAsArray(Email::class)
+        );
+        $model->addSecondaryModelRecord(Email::class, '1234567899');
+        $model->addSecondaryModelRecord(Email::class, 'asdfgh');
+        self::assertEquals(
+            2,
+            $model->ref(Email::class)->action('count')->getOne()
+        );
+        //Disable for now as array Persistence does not work properly with export
+        /*self::assertSame(
+            ['1234567899', 'asdfgh'],
+            $model->getAllSecondaryModelValuesAsArray(Email::class)
+        );*/
     }
 }

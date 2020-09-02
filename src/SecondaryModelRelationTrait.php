@@ -2,6 +2,7 @@
 
 namespace secondarymodelforatk;
 
+use atk4\data\Exception;
 use atk4\data\Model;
 use secondarymodelforatk\Reference\HasManySecondaryModel;
 
@@ -80,15 +81,53 @@ trait SecondaryModelRelationTrait
             return null;
         }
 
-        $sbm = new $className($this->persistence, ['parentObject' => $this]);
-        $sbm->set('value', $value);
-        $sbm->set('model_id', $this->get($this->getRef($className)->getOurField()));
-        $sbm->set('model_class', $this->getRef($className)->getOurModelClass());
+        $secondaryModel = new $className($this->persistence, ['parentObject' => $this]);
+        $secondaryModel->set('value', $value);
+        $secondaryModel->set('model_id', $this->get($this->getRef($className)->getOurField()));
+        $secondaryModel->set('model_class', $this->getRef($className)->getOurModelClass());
         foreach($additionalValues as $fieldName => $fieldValue) {
-            $sbm->set($fieldName, $fieldValue);
+            $secondaryModel->set($fieldName, $fieldValue);
         }
-        $sbm->save();
+        $secondaryModel->save();
 
-        return $sbm;
+        return $secondaryModel;
+    }
+
+
+    /**
+     * shortcut to get the first SecondaryModel Record if available. Handy if e.g. you want to load
+     * the first email existing for a person.
+     */
+    public function getFirstSecondaryModelRecord(string $className): ?SecondaryModel {
+        if(!$this->loaded()) {
+            throw new Exception('$this must be loaded in ' . __FUNCTION__);
+        }
+        //will throw exception if ref does not exist
+        $secondaryModel = $this->ref($className);
+        $secondaryModel->tryLoadAny();
+
+        if(!$secondaryModel->loaded()) {
+            return null;
+        }
+
+        return $secondaryModel;
+    }
+
+
+    /**
+     * get value field of all SecondaryModels as array. Handy as shortcut if e.g. you want to quickly get all
+     * email addresses of a user
+     */
+    public function getAllSecondaryModelValuesAsArray(string $className): array {
+        if(!$this->loaded()) {
+            throw new Exception('$this must be loaded in ' . __FUNCTION__);
+        }
+        return array_map(
+            function ($a) {
+                return $a['value'];
+            },
+            //will throw exception if ref does not exist
+            $this->ref($className)->export(['value'])
+        );
     }
 }
