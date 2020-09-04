@@ -153,7 +153,11 @@ class SecondaryModelRelationTraitTest extends PhpunitTestCase {
     }
 
     public function testgetAllSecondaryModelValuesAsArray() {
-        $model = new Person(new Persistence\Array_());
+        $persistence = Persistence::connect('sqlite::memory:');
+        $model = new Person($persistence);
+        Migration::of($model)->drop()->create();
+        $email = new Email($persistence);
+        Migration::of($email)->drop()->create();
         $model->save();
         self::assertSame(
             [],
@@ -165,10 +169,43 @@ class SecondaryModelRelationTraitTest extends PhpunitTestCase {
             2,
             $model->ref(Email::class)->action('count')->getOne()
         );
-        //Disable for now as array Persistence does not work properly with export
-        /*self::assertSame(
+        self::assertSame(
             ['1234567899', 'asdfgh'],
             $model->getAllSecondaryModelValuesAsArray(Email::class)
-        );*/
+        );
+    }
+
+    public function testRefConditionsSetupProperly() {
+        $persistence = Persistence::connect('sqlite::memory:');
+        $model1 = new Person($persistence);
+        Migration::of($model1)->drop()->create();
+        $email = new Email($persistence);
+        Migration::of($email)->drop()->create();
+        $model1->save();
+        $model1->addSecondaryModelRecord(Email::class, '1234567899');
+        $model1->addSecondaryModelRecord(Email::class, 'asdfgh');
+
+        $model2 = new Person($persistence);
+        $model2->save();
+        $model2->addSecondaryModelRecord(Email::class, 'zireoowej');
+
+        self::assertEquals(
+            2,
+            $model1->ref(Email::class)->action('count')->getOne()
+        );
+        self::assertEquals(
+            1,
+            $model2->ref(Email::class)->action('count')->getOne()
+        );
+
+        self::assertSame(
+            ['1234567899', 'asdfgh'],
+            $model1->getAllSecondaryModelValuesAsArray(Email::class)
+        );
+
+        self::assertSame(
+            ['zireoowej'],
+            $model2->getAllSecondaryModelValuesAsArray(Email::class)
+        );
     }
 }
