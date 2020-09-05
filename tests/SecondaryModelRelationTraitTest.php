@@ -208,4 +208,16 @@ class SecondaryModelRelationTraitTest extends PhpunitTestCase {
             $model2->getAllSecondaryModelValuesAsArray(Email::class)
         );
     }
+
+    public function testExceptionThisNotLoadedGetFirst() {
+        $model1 = new Person(new Persistence\Array_());
+        self::expectException(Exception::class);
+        $model1->getFirstSecondaryModelRecord(Email::class);
+    }
+
+    public function testExceptionThisNotLoadedGetArray() {
+        $model1 = new Person(new Persistence\Array_());
+        self::expectException(Exception::class);
+        $model1->getAllSecondaryModelValuesAsArray(Email::class);
+    }
 }
