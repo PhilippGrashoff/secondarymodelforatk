@@ -61,8 +61,8 @@ abstract class SecondaryModel extends Model
     public function getParentObject(): ?Model
     {
         if (
-            empty($this->get('model_class'))
-            || empty($this->get('model_id'))
+            $this->get('model_class') === null
+            || $this->get('model_id') === null
         ) {
             return null;
         }
