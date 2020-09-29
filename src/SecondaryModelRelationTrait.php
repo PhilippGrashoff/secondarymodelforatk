@@ -163,8 +163,9 @@ trait SecondaryModelRelationTrait
         //will throw exception if ref does not exist
         $secondaryModel = $this->ref($className);
         $secondaryModel->load($id);
+        $clone = clone $secondaryModel;
         $secondaryModel->delete();
 
-        return $secondaryModel;
+        return $clone;
     }
 }
