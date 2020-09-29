@@ -15,6 +15,9 @@ abstract class SecondaryModel extends Model
     {
         parent::init();
 
+        //no expressions, hence no reload needed
+        $this->reload_after_save = false;
+
         $this->addFields(
             [
                 //The class of the parent model e.g. Some\NameSpace\SomeClass

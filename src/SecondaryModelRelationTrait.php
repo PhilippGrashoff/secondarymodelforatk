@@ -33,21 +33,23 @@ trait SecondaryModelRelationTrait
             [
                 function () use ($className, $ourClassName, $ourIdField) {
                     return (new $className($this->persistence, ['parentObject' => $this]))
-                        ->addCondition('model_class', ($ourClassName ? : get_class($this))
+                        ->addCondition(
+                            'model_class',
+                            ($ourClassName ?: get_class($this))
                         );
                 },
-                'their_field'     => 'model_id',
-                'our_field'       => $ourIdField === null ? $this->id_field : $ourIdField,
-                'our_model_class' => $ourClassName ? : get_class($this)
+                'their_field' => 'model_id',
+                'our_field' => $ourIdField === null ? $this->id_field : $ourIdField,
+                'our_model_class' => $ourClassName ?: get_class($this)
             ]
         );
 
         //add a hook that automatically deletes SecondaryModel records when main record is deleted
-        if($addDelete) {
+        if ($addDelete) {
             $this->onHook(
                 Model::HOOK_AFTER_DELETE,
-                function (Model $model) use ($className) {
-                    foreach($model->ref($className) as $sbm) {
+                function (self $model) use ($className) {
+                    foreach ($model->ref($className) as $sbm) {
                         $sbm->delete();
                     }
                 }
@@ -64,13 +66,14 @@ trait SecondaryModelRelationTrait
      * @param array $additionalValues //if additional field values should be set, use this optional array.
      *     ['some_other_field' => 'SomeValue', 'and_another_field' => 'AndSomeOtherValue']
      */
-    public function addSecondaryModelRecord(string $className, $value, array $additionalValues = []): ?SecondaryModel {
-        if(!$this->hasRef($className)) {
-            throw new \atk4\data\Exception('Reference ' . $className . ' does not exist in ' . get_class($this));
+    public function addSecondaryModelRecord(string $className, $value, array $additionalValues = []): ?SecondaryModel
+    {
+        if (!$this->hasRef($className)) {
+            throw new Exception('Reference ' . $className . ' does not exist in ' . get_class($this));
         }
 
         //if $this was not saved yet, add Hook to create SBM after saving
-        if(!$this->loaded()) {
+        if (!$this->loaded()) {
             $this->onHook(
                 Model::HOOK_AFTER_SAVE,
                 function ($model, $isUpdate) use ($className, $value, $additionalValues) {
@@ -85,7 +88,7 @@ trait SecondaryModelRelationTrait
         $secondaryModel->set('value', $value);
         $secondaryModel->set('model_id', $this->get($this->getRef($className)->getOurField()));
         $secondaryModel->set('model_class', $this->getRef($className)->getOurModelClass());
-        foreach($additionalValues as $fieldName => $fieldValue) {
+        foreach ($additionalValues as $fieldName => $fieldValue) {
             $secondaryModel->set($fieldName, $fieldValue);
         }
         $secondaryModel->save();
@@ -93,33 +96,33 @@ trait SecondaryModelRelationTrait
         return $secondaryModel;
     }
 
-
     /**
      * shortcut to get the first SecondaryModel Record if available. Handy if e.g. you want to load
      * the first email existing for a person.
      */
-    public function getFirstSecondaryModelRecord(string $className): ?SecondaryModel {
-        if(!$this->loaded()) {
+    public function getFirstSecondaryModelRecord(string $className): ?SecondaryModel
+    {
+        if (!$this->loaded()) {
             throw new Exception('$this must be loaded in ' . __FUNCTION__);
         }
         //will throw exception if ref does not exist
         $secondaryModel = $this->ref($className);
         $secondaryModel->tryLoadAny();
 
-        if(!$secondaryModel->loaded()) {
+        if (!$secondaryModel->loaded()) {
             return null;
         }
 
         return $secondaryModel;
     }
 
-
     /**
      * get value field of all SecondaryModels as array. Handy as shortcut if e.g. you want to quickly get all
      * email addresses of a user
      */
-    public function getAllSecondaryModelValuesAsArray(string $className): array {
-        if(!$this->loaded()) {
+    public function getAllSecondaryModelValuesAsArray(string $className): array
+    {
+        if (!$this->loaded()) {
             throw new Exception('$this must be loaded in ' . __FUNCTION__);
         }
         return array_map(
@@ -129,5 +132,39 @@ trait SecondaryModelRelationTrait
             //will throw exception if ref does not exist
             $this->ref($className)->export(['value'])
         );
+    }
+
+    public function updateSecondaryModelRecord(
+        string $className,
+        $id,
+        string $value,
+        array $additionalValues = []
+    ): SecondaryModel {
+        if (!$this->loaded()) {
+            throw new Exception('$this must be loaded in ' . __FUNCTION__);
+        }
+        //will throw exception if ref does not exist
+        $secondaryModel = $this->ref($className);
+        $secondaryModel->load($id);
+        $secondaryModel->set('value', $value);
+        $secondaryModel->setMulti($additionalValues);
+        $secondaryModel->save();
+
+        return $secondaryModel;
+    }
+
+    public function deleteSecondaryModelRecord(
+        string $className,
+        $id
+    ): SecondaryModel {
+        if (!$this->loaded()) {
+            throw new Exception('$this must be loaded in ' . __FUNCTION__);
+        }
+        //will throw exception if ref does not exist
+        $secondaryModel = $this->ref($className);
+        $secondaryModel->load($id);
+        $secondaryModel->delete();
+
+        return $secondaryModel;
     }
 }
