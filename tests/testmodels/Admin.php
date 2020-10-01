@@ -19,7 +19,7 @@ class Admin extends Model {
 
     public $table = 'admin';
 
-    public function init(): void
+    protected function init(): void
     {
          parent::init();
 

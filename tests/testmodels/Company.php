@@ -13,7 +13,7 @@ class Company extends Model {
 
     public $table = 'company';
 
-    public function init(): void
+    protected function init(): void
     {
          parent::init();
 

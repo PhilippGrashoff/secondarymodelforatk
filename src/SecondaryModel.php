@@ -11,7 +11,7 @@ abstract class SecondaryModel extends Model
 
     public $parentObject = null;
 
-    public function init(): void
+    protected function init(): void
     {
         parent::init();
 

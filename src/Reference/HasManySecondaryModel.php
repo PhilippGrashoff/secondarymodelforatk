@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace secondarymodelforatk\Reference;
 
+use atk4\data\Field;
 use atk4\data\Reference\HasMany;
 
 class HasManySecondaryModel extends HasMany {
 
     protected $our_model_class = '';
 
-    public function getOurField(): string {
+    public function getOurFieldName(): string {
         return $this->our_field;
     }
 

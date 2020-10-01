@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "99abbb4457b6ed6e99264d9f019cda51",
+    "content-hash": "0b708a7f3e38bc08fcaceb80f24ee1a9",
     "packages": [
         {
             "name": "atk4/core",
-            "version": "2.2.0",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atk4/core.git",
-                "reference": "b2d32824066fd312d9f0c6edde239d70fb79d782"
+                "reference": "196e8a382a58c7bc075ae6cd082dc0a511812100"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atk4/core/zipball/b2d32824066fd312d9f0c6edde239d70fb79d782",
-                "reference": "b2d32824066fd312d9f0c6edde239d70fb79d782",
+                "url": "https://api.github.com/repos/atk4/core/zipball/196e8a382a58c7bc075ae6cd082dc0a511812100",
+                "reference": "196e8a382a58c7bc075ae6cd082dc0a511812100",
                 "shasum": ""
             },
             "require": {
@@ -29,8 +29,9 @@
                 "symfony/yaml": ">=3.4"
             },
             "require-dev": {
-                "atk4/data": "^2.2.0",
+                "atk4/data": "dev-develop",
                 "friendsofphp/php-cs-fixer": "^2.16",
+                "johnkary/phpunit-speedtrap": "^3.2",
                 "phpunit/phpunit": ">=9.0",
                 "symfony/contracts": ">=1.1"
             },
@@ -71,31 +72,35 @@
                 "php",
                 "traits"
             ],
-            "time": "2020-07-15T21:17:52+00:00"
+            "time": "2020-09-21T23:00:35+00:00"
         },
         {
             "name": "atk4/data",
-            "version": "2.2.0",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atk4/data.git",
-                "reference": "36b9507375f202178c9fc09331ba9f7d0d1c903b"
+                "reference": "a8b6ea4795926c825d744463906392aaf548d5bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atk4/data/zipball/36b9507375f202178c9fc09331ba9f7d0d1c903b",
-                "reference": "36b9507375f202178c9fc09331ba9f7d0d1c903b",
+                "url": "https://api.github.com/repos/atk4/data/zipball/a8b6ea4795926c825d744463906392aaf548d5bd",
+                "reference": "a8b6ea4795926c825d744463906392aaf548d5bd",
                 "shasum": ""
             },
             "require": {
-                "atk4/core": "^2.2.0",
-                "atk4/dsql": "^2.2.0",
+                "atk4/core": "dev-develop",
+                "atk4/dsql": "dev-develop",
                 "ext-intl": "*",
                 "php": ">=7.3.0"
             },
+            "replace": {
+                "atk4/data": "self.version"
+            },
             "require-dev": {
-                "atk4/schema": "^2.2.0",
+                "atk4/schema": "dev-develop",
                 "friendsofphp/php-cs-fixer": "^2.16",
+                "johnkary/phpunit-speedtrap": "^3.2",
                 "phpunit/phpcov": "*",
                 "phpunit/phpunit": ">=9.0"
             },
@@ -139,28 +144,29 @@
                 "query",
                 "sql"
             ],
-            "time": "2020-07-15T21:59:13+00:00"
+            "time": "2020-09-29T13:39:23+00:00"
         },
         {
             "name": "atk4/dsql",
-            "version": "2.2.0",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atk4/dsql.git",
-                "reference": "cadfdaa60dd8eef318a86ace30d8ea461cfe801d"
+                "reference": "d89b6189e93ac72e678e13fdb0d8510866dd672e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atk4/dsql/zipball/cadfdaa60dd8eef318a86ace30d8ea461cfe801d",
-                "reference": "cadfdaa60dd8eef318a86ace30d8ea461cfe801d",
+                "url": "https://api.github.com/repos/atk4/dsql/zipball/d89b6189e93ac72e678e13fdb0d8510866dd672e",
+                "reference": "d89b6189e93ac72e678e13fdb0d8510866dd672e",
                 "shasum": ""
             },
             "require": {
-                "atk4/core": "^2.2.0",
+                "atk4/core": "dev-develop",
                 "php": ">=7.3.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.16",
+                "johnkary/phpunit-speedtrap": "^3.2",
                 "phpunit/phpcov": "*",
                 "phpunit/phpunit": ">=9.0"
             },
@@ -200,34 +206,34 @@
                 "orm",
                 "sql"
             ],
-            "time": "2020-07-15T21:51:54+00:00"
+            "time": "2020-09-21T19:30:41+00:00"
         },
         {
             "name": "atk4/schema",
-            "version": "2.2.0",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atk4/schema.git",
-                "reference": "c041bb871c53ad5aad07cebea61fec62f73ee417"
+                "reference": "75fe8ef4f526458dde70b24fe17500d304dc8728"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atk4/schema/zipball/c041bb871c53ad5aad07cebea61fec62f73ee417",
-                "reference": "c041bb871c53ad5aad07cebea61fec62f73ee417",
+                "url": "https://api.github.com/repos/atk4/schema/zipball/75fe8ef4f526458dde70b24fe17500d304dc8728",
+                "reference": "75fe8ef4f526458dde70b24fe17500d304dc8728",
                 "shasum": ""
             },
             "require": {
-                "atk4/data": "^2.2.0",
+                "atk4/data": "dev-develop",
                 "php": ">=7.3.0"
             },
             "require-dev": {
-                "atk4/ui": "^2.2.0",
+                "atk4/ui": "dev-develop",
                 "friendsofphp/php-cs-fixer": "^2.16",
                 "phpunit/phpcov": "*",
                 "phpunit/phpunit": ">=9.0"
             },
             "suggest": {
-                "atk4/ui": "^2.2.0"
+                "atk4/ui": "dev-develop"
             },
             "type": "library",
             "autoload": {
@@ -273,25 +279,25 @@
                 "schema",
                 "sql"
             ],
-            "time": "2020-07-15T22:13:03+00:00"
+            "time": "2020-09-14T14:51:35+00:00"
         },
         {
             "name": "atk4/ui",
-            "version": "2.2.0",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atk4/ui.git",
-                "reference": "de001edbddf01786b9a7b3972d6c7c602b09d216"
+                "reference": "1d61faaf07baa84f55668017ce1c93182548c4bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atk4/ui/zipball/de001edbddf01786b9a7b3972d6c7c602b09d216",
-                "reference": "de001edbddf01786b9a7b3972d6c7c602b09d216",
+                "url": "https://api.github.com/repos/atk4/ui/zipball/1d61faaf07baa84f55668017ce1c93182548c4bf",
+                "reference": "1d61faaf07baa84f55668017ce1c93182548c4bf",
                 "shasum": ""
             },
             "require": {
-                "atk4/core": "^2.2.0",
-                "atk4/data": "^2.2.0",
+                "atk4/core": "dev-develop",
+                "atk4/data": "dev-develop",
                 "ext-json": "*",
                 "php": ">=7.3.0"
             },
@@ -302,8 +308,9 @@
                 "friendsofphp/php-cs-fixer": "^2.16",
                 "fzaninotto/faker": "*",
                 "guzzlehttp/guzzle": "^6.3",
+                "johnkary/phpunit-speedtrap": "^3.2",
                 "phpunit/phpcov": "*",
-                "phpunit/phpunit": ">=9.0",
+                "phpunit/phpunit": ">=9.3",
                 "symfony/process": "^4.3 || ^5.0"
             },
             "type": "library",
@@ -365,7 +372,7 @@
                 "web",
                 "widget"
             ],
-            "time": "2020-07-15T22:16:50+00:00"
+            "time": "2020-10-01T12:59:56+00:00"
         },
         {
             "name": "philippgrashoff/traitsforatkdata",
@@ -373,19 +380,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhilippGrashoff/traitsforatkdata.git",
-                "reference": "0ef6a9ef3fe0559599c7d40f20aef44e03e2fad5"
+                "reference": "ea73915270039973276a047e6536542da5535caa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhilippGrashoff/traitsforatkdata/zipball/0ef6a9ef3fe0559599c7d40f20aef44e03e2fad5",
-                "reference": "0ef6a9ef3fe0559599c7d40f20aef44e03e2fad5",
+                "url": "https://api.github.com/repos/PhilippGrashoff/traitsforatkdata/zipball/ea73915270039973276a047e6536542da5535caa",
+                "reference": "ea73915270039973276a047e6536542da5535caa",
                 "shasum": ""
             },
             "require": {
-                "atk4/core": "2.2.0",
-                "atk4/data": "2.2.0",
-                "atk4/schema": "2.2.0",
-                "atk4/ui": "2.2.0",
+                "atk4/core": "dev-develop",
+                "atk4/data": "dev-develop",
+                "atk4/schema": "dev-develop",
+                "atk4/ui": "dev-develop",
                 "ext-mbstring": "*",
                 "ext-sodium": "*"
             },
@@ -399,7 +406,7 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2020-09-27T12:03:48+00:00"
+            "time": "2020-10-01T16:43:47+00:00"
         },
         {
             "name": "psr/log",
@@ -1718,16 +1725,16 @@
         },
         {
             "name": "sebastian/comparator",
-            "version": "4.0.4",
+            "version": "4.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/comparator.git",
-                "reference": "e717aabeafe4eac045d3e947dad3207118664c72"
+                "reference": "7a8ff306445707539c1a6397372a982a1ec55120"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/e717aabeafe4eac045d3e947dad3207118664c72",
-                "reference": "e717aabeafe4eac045d3e947dad3207118664c72",
+                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/7a8ff306445707539c1a6397372a982a1ec55120",
+                "reference": "7a8ff306445707539c1a6397372a982a1ec55120",
                 "shasum": ""
             },
             "require": {
@@ -1778,7 +1785,7 @@
                 "compare",
                 "equality"
             ],
-            "time": "2020-09-28T05:31:46+00:00"
+            "time": "2020-09-30T06:47:25+00:00"
         },
         {
             "name": "sebastian/complexity",
@@ -2476,6 +2483,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "atk4/data": 20,
+        "atk4/schema": 20,
         "philippgrashoff/traitsforatkdata": 20
     },
     "prefer-stable": true,

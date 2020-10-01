@@ -66,8 +66,11 @@ trait SecondaryModelRelationTrait
      * @param array $additionalValues //if additional field values should be set, use this optional array.
      *     ['some_other_field' => 'SomeValue', 'and_another_field' => 'AndSomeOtherValue']
      */
-    public function addSecondaryModelRecord(string $className, $value, array $additionalValues = []): ?SecondaryModel
-    {
+    public function addSecondaryModelRecord(
+        string $className,
+        $value,
+        array $additionalValues = []
+    ): ?SecondaryModel {
         if (!$this->hasRef($className)) {
             throw new Exception('Reference ' . $className . ' does not exist in ' . get_class($this));
         }
@@ -86,9 +89,9 @@ trait SecondaryModelRelationTrait
 
         $secondaryModel = new $className($this->persistence, ['parentObject' => $this]);
         $secondaryModel->set('value', $value);
-        $secondaryModel->set('model_id', $this->get($this->getRef($className)->getOurField()));
+        $secondaryModel->set('model_id', $this->get($this->getRef($className)->getOurFieldName()));
         $secondaryModel->set('model_class', $this->getRef($className)->getOurModelClass());
-        foreach ($additionalValues as $fieldName => $fieldValue) {
+         foreach ($additionalValues as $fieldName => $fieldValue) {
             $secondaryModel->set($fieldName, $fieldValue);
         }
         $secondaryModel->save();
