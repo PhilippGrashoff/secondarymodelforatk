@@ -47,7 +47,7 @@ trait SecondaryModelRelationTrait
         //add a hook that automatically deletes SecondaryModel records when main record is deleted
         if ($addDelete) {
             $this->onHook(
-                Model::HOOK_AFTER_DELETE,
+                Model::HOOK_BEFORE_DELETE,
                 function (self $model) use ($className) {
                     foreach ($model->ref($className) as $sbm) {
                         $sbm->delete();
