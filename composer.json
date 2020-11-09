@@ -8,8 +8,8 @@
     }
   },
   "require":{
-    "atk4/data": "2.3.0",
-    "atk4/schema": "2.3.0",
+    "atk4/data": "2.3.*",
+    "atk4/schema": "2.3.*",
     "philippgrashoff/traitsforatkdata": "dev-master"
   },
   "require-dev": {

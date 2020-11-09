@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace secondarymodelforatk;
 
@@ -79,8 +81,10 @@ trait SecondaryModelRelationTrait
         if (!$this->loaded()) {
             $this->onHook(
                 Model::HOOK_AFTER_SAVE,
-                function ($model, $isUpdate) use ($className, $value, $additionalValues) {
-                    $model->addSecondaryModelRecord($className, $value, $additionalValues);
+                function (self $model, $isUpdate) use ($className, $value, $additionalValues) {
+                    if(!$isUpdate) {
+                        $model->addSecondaryModelRecord($className, $value, $additionalValues);
+                    }
                 }
             );
 
