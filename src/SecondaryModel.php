@@ -42,7 +42,8 @@ abstract class SecondaryModel extends Model
                 //existing parent models. This timestamp can be used to indicate the last time such a check happened.
                 [
                     'last_checked',
-                    'type' => 'datetime'
+                    'type' => 'datetime',
+                    'system' => true,
                 ],
             ]
         );
