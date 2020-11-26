@@ -124,6 +124,26 @@ trait SecondaryModelRelationTrait
     }
 
     /**
+     * get the first value field that is not empty. Handy for e.g. getting the first Phone Number etc.
+     */
+    public function getFirstSecondaryModelValue(string $className): string {
+        if (!$this->loaded()) {
+            throw new Exception('$this must be loaded in ' . __FUNCTION__);
+        }
+        //will throw exception if ref does not exist
+        $secondaryModel = $this->ref($className);
+        $secondaryModel->addCondition('value', '!=', null);
+        $secondaryModel->addCondition('value', '!=', '');
+        $secondaryModel->tryLoadAny();
+
+        if (!$secondaryModel->loaded()) {
+            return '';
+        }
+
+        return $secondaryModel->get('value');
+    }
+
+    /**
      * get value field of all SecondaryModels as array. Handy as shortcut if e.g. you want to quickly get all
      * email addresses of a user
      */

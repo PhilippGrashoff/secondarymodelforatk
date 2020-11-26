@@ -300,15 +300,55 @@ class SecondaryModelRelationTraitTest extends TestCase
 
     public function testExceptionThisNotLoadedUpdateSecondaryModelRecord()
     {
-        $model1 = new Person(new Persistence\Array_());
+        $model1 = new Person($this->getSqliteTestPersistence());
         self::expectException(Exception::class);
         $model1->updateSecondaryModelRecord(Email::class, 1, 'sdff');
     }
 
     public function testExceptionThisNotLoadedDeleteSecondaryModelRecord()
     {
-        $model1 = new Person(new Persistence\Array_());
+        $model1 = new Person($this->getSqliteTestPersistence());
         self::expectException(Exception::class);
         $model1->deleteSecondaryModelRecord(Email::class, 1);
+    }
+
+    public function testGetFirstSecondaryModelValue() {
+        $persistence = $this->getSqliteTestPersistence();
+        $model = new Person($persistence);
+        $model->save(); self::assertSame(
+            '',
+            $model->getFirstSecondaryModelValue(Email::class)
+        );
+
+
+        $email1 = $model->addSecondaryModelRecord(Email::class, '1234567899');
+        $email2 =  $model->addSecondaryModelRecord(Email::class, 'frfrfrfr');
+
+        $email1->set('value', null);
+        $email1->save();
+        self::assertSame(
+            $email2->get('value'),
+            $model->getFirstSecondaryModelValue(Email::class)
+        );
+
+        $email1->set('value', '');
+        $email1->save();
+        self::assertSame(
+            $email2->get('value'),
+            $model->getFirstSecondaryModelValue(Email::class)
+        );
+        $email1->set('value', 'nowthereisavalue');
+        $email1->save();
+        self::assertSame(
+            $email1->get('value'),
+            $model->getFirstSecondaryModelValue(Email::class)
+        );
+    }
+
+    public function testExceptionThisNotLoadedGetFirstSecondaryModelValue()
+    {
+        $model1 = new Person($this->getSqliteTestPersistence());
+        self::expectException(Exception::class);
+        $model1->getFirstSecondaryModelValue(Email::class);
     }
 }
