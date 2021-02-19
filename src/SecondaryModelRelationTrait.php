@@ -27,7 +27,7 @@ trait SecondaryModelRelationTrait
         string $className,
         bool $addDelete = true,
         string $ourClassName = '',
-        string $ourIdField = null
+        ?string $ourIdField = null
     ): HasManySecondaryModel {
         $reference = $this->_hasReference(
             [HasManySecondaryModel::class],
