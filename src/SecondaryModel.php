@@ -56,6 +56,15 @@ abstract class SecondaryModel extends Model
                 $this->set('model_id', ($this->parentObject)->get($this->parentObject->id_field));
             }
         }
+
+        //hack to get model_class and model_id away from dirty. Its set if parentObject is set
+        //TODO: create issue in atk data and remove this when issue is resolved
+        $this->onHook(
+            Model::HOOK_AFTER_LOAD,
+            function(self $model) {
+                $model->dirty = [];
+            }
+        );
     }
 
 

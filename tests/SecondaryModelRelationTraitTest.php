@@ -4,7 +4,6 @@ namespace secondarymodelforatk\tests;
 
 use atk4\data\Exception;
 use atk4\data\Persistence;
-use atk4\schema\Migration;
 use secondarymodelforatk\tests\testmodels\Admin;
 use secondarymodelforatk\tests\testmodels\Email;
 use secondarymodelforatk\tests\testmodels\Person;
@@ -312,17 +311,19 @@ class SecondaryModelRelationTraitTest extends TestCase
         $model1->deleteSecondaryModelRecord(Email::class, 1);
     }
 
-    public function testGetFirstSecondaryModelValue() {
+    public function testGetFirstSecondaryModelValue()
+    {
         $persistence = $this->getSqliteTestPersistence();
         $model = new Person($persistence);
-        $model->save(); self::assertSame(
+        $model->save();
+        self::assertSame(
             '',
             $model->getFirstSecondaryModelValue(Email::class)
         );
 
 
         $email1 = $model->addSecondaryModelRecord(Email::class, '1234567899');
-        $email2 =  $model->addSecondaryModelRecord(Email::class, 'frfrfrfr');
+        $email2 = $model->addSecondaryModelRecord(Email::class, 'frfrfrfr');
 
         $email1->set('value', null);
         $email1->save();
@@ -350,5 +351,19 @@ class SecondaryModelRelationTraitTest extends TestCase
         $model1 = new Person($this->getSqliteTestPersistence());
         self::expectException(Exception::class);
         $model1->getFirstSecondaryModelValue(Email::class);
+    }
+
+    public function testNoFieldsDirtyOnLoad()
+    {
+        $persistence = $this->getSqliteTestPersistence();
+        $model = new Person($persistence);
+        $model->save();
+        $return = $model->addSecondaryModelRecord(Email::class, '1234567899');
+        $email = $model->ref(Email::class);
+        $email->load($return->get('id'));
+        self::assertSame(
+            [],
+            $email->dirty
+        );
     }
 }
