@@ -2,16 +2,18 @@
 
 namespace secondarymodelforatk\tests;
 
-use atk4\data\Exception;
 use atk4\core\AtkPhpunit\TestCase;
+use atk4\data\Exception;
 use atk4\data\Persistence;
-use secondarymodelforatk\tests\testmodels\Person;
 use secondarymodelforatk\tests\testmodels\Email;
+use secondarymodelforatk\tests\testmodels\Person;
 
 
-class SecondaryModelTest extends TestCase {
+class SecondaryModelTest extends TestCase
+{
 
-    public function testGetParentObject() {
+    public function testGetParentObject()
+    {
         $persistence = new Persistence\Array_();
         $model = new Person($persistence);
         $model->save();
@@ -26,12 +28,13 @@ class SecondaryModelTest extends TestCase {
         //Record with valid id
         $email->set('model_id', $model->get('id'));
         $parentObject = $email->getParentObject();
-        self::assertTrue($parentObject instanceOf Person);
+        self::assertTrue($parentObject instanceof Person);
         self::assertTrue($parentObject->loaded());
         self::assertSame($model->get('id'), $parentObject->get('id'));
     }
 
-    public function testGetParentObjectExceptionInvalidModelClass() {
+    public function testGetParentObjectExceptionInvalidModelClass()
+    {
         $persistence = new Persistence\Array_();
         $model = new Person($persistence);
         $model->save();
@@ -42,21 +45,22 @@ class SecondaryModelTest extends TestCase {
         $email->getParentObject();
     }
 
-    public function testGetParentObjectExceptionInvalidID() {
+    public function testGetParentObjectNullOnNonExistingRecord()
+    {
         $email = new Email(new Persistence\Array_());
         $email->set('model_class', Person::class);
         $email->set('model_id', 333);
-        self::expectException(Exception::class);
-        $email->getParentObject();
+        self::assertNull($email->getParentObject());
     }
 
-    public function testSetParentObjectDataDuringInit() {
+    public function testSetParentObjectDataDuringInit()
+    {
         $persistence = new Persistence\Array_();
         $model = new Person($persistence);
         $model->save();
         $email = new Email($persistence, ['parentObject' => $model]);
         $parentObject = $email->getParentObject();
-        self::assertTrue($parentObject instanceOf Person);
+        self::assertTrue($parentObject instanceof Person);
         self::assertSame($model->get('id'), $parentObject->get('id'));
     }
 }

@@ -86,7 +86,11 @@ abstract class SecondaryModel extends Model
         }
 
         $parentObject = new $className($this->persistence);
-        $parentObject->load($this->get('model_id'));
+        $parentObject->tryLoad($this->get('model_id'));
+
+        if(!$parentObject->loaded()) {
+            return null;
+        }
 
         return $parentObject;
     }

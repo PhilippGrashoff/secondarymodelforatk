@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a9212ca3cedb358d562183e35fe10ae9",
+    "content-hash": "34350eed6231fc2c897ff4b667a224da",
     "packages": [
         {
             "name": "atk4/core",
@@ -382,19 +382,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhilippGrashoff/traitsforatkdata.git",
-                "reference": "8beac835af3dea489b4561690e55765b9a5f8a8d"
+                "reference": "38cd42f856d59023835bc452a7fa78850c1e577f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhilippGrashoff/traitsforatkdata/zipball/8beac835af3dea489b4561690e55765b9a5f8a8d",
-                "reference": "8beac835af3dea489b4561690e55765b9a5f8a8d",
+                "url": "https://api.github.com/repos/PhilippGrashoff/traitsforatkdata/zipball/38cd42f856d59023835bc452a7fa78850c1e577f",
+                "reference": "38cd42f856d59023835bc452a7fa78850c1e577f",
                 "shasum": ""
             },
             "require": {
-                "atk4/core": "2.3.*",
-                "atk4/data": "2.3.*",
-                "atk4/schema": "2.3.*",
-                "atk4/ui": "2.3.*",
+                "atk4/core": "2.3.5",
+                "atk4/data": "2.3.6",
+                "atk4/schema": "2.3.1",
+                "atk4/ui": "2.3.5",
                 "ext-mbstring": "*",
                 "ext-sodium": "*"
             },
@@ -408,7 +408,7 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2021-02-20T15:38:32+00:00"
+            "time": "2021-03-11T10:57:14+00:00"
         },
         {
             "name": "psr/log",
@@ -2487,6 +2487,6 @@
     "platform": [],
     "platform-dev": [],
     "platform-overrides": {
-        "php": "7.3"
+        "php": "7.4"
     }
 }
