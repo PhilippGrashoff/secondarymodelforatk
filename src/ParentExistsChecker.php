@@ -29,12 +29,13 @@ class ParentExistsChecker
         $model->setLimit($this->amountRecordsToCheck);
         $model->setOrder(['last_checked' => 'asc', $model->id_field => 'asc']);
         foreach ($model as $record) {
-            if (!$record->getParentObject()) {
-                $deletedRecords[] = clone $record;
-                $record->delete();
-            } else {
+            try {
+                $record->getParentObject();
                 $record->set('last_checked', new \DateTime());
                 $record->save();
+            } catch (ParentNotFoundException $e) {
+                $deletedRecords[] = clone $record;
+                $record->delete();
             }
         }
 

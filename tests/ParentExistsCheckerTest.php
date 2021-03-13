@@ -95,7 +95,7 @@ class ParentExistsCheckerTest extends TestCase
         self::assertEqualsWithDelta(
             (int)$email1->get('last_checked')->format('Hisv'),
             (int)$now->format('Hisv'),
-            100
+            50
         );
         self::assertNull($email2->get('last_checked'));
 
@@ -114,7 +114,37 @@ class ParentExistsCheckerTest extends TestCase
         self::assertEqualsWithDelta(
             (int)$email1->get('last_checked')->format('Hisv'),
             (int)(clone $now)->modify('+2 Seconds')->format('Hisv'),
-            100
+            150
+        );
+    }
+
+    public function testSecondaryModelsWithModelClassNullAreNotTouched(): void
+    {
+        $persistence = $this->getSqliteTestPersistence();
+        $person1 = new Person($persistence);
+        $person1->save();
+        $email1 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
+        $email2 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
+        $email3 = (new Email($persistence))->save();
+        //hack to not execute hooks
+        (new Person($persistence))->addCondition('id', '=', $person1->getId())->action('delete')->execute();
+        self::assertSame(
+            3,
+            (int)(new Email($persistence))->action('count')->getOne()
+        );
+
+        $pec = new ParentExistsChecker();
+        $pec->deleteSecondaryModelsWithoutParent(new Email($persistence));
+        self::assertSame(
+            1,
+            (int)(new Email($persistence))->action('count')->getOne()
+        );
+
+        $email3->reload();
+        self::assertEqualsWithDelta(
+            (int)$email3->get('last_checked')->format('Hisv'),
+            (int)(new \DateTime())->format('Hisv'),
+            50
         );
     }
 }

@@ -3,8 +3,9 @@
 namespace secondarymodelforatk\tests;
 
 use atk4\core\AtkPhpunit\TestCase;
-use atk4\data\Exception;
 use atk4\data\Persistence;
+use secondarymodelforatk\ClassNotExistsException;
+use secondarymodelforatk\ParentNotFoundException;
 use secondarymodelforatk\tests\testmodels\Email;
 use secondarymodelforatk\tests\testmodels\Person;
 
@@ -41,7 +42,7 @@ class SecondaryModelTest extends TestCase
         $email = new Email($persistence);
         $email->set('model_class', 'Duggu');
         $email->set('model_id', $model->get('id'));
-        self::expectException(Exception::class);
+        self::expectException(ClassNotExistsException::class);
         $email->getParentObject();
     }
 
@@ -50,7 +51,8 @@ class SecondaryModelTest extends TestCase
         $email = new Email(new Persistence\Array_());
         $email->set('model_class', Person::class);
         $email->set('model_id', 333);
-        self::assertNull($email->getParentObject());
+        self::expectException(ParentNotFoundException::class);
+        $email->getParentObject();
     }
 
     public function testSetParentObjectDataDuringInit()

@@ -2,7 +2,6 @@
 
 namespace secondarymodelforatk;
 
-use atk4\data\Exception;
 use atk4\data\Model;
 
 
@@ -61,7 +60,7 @@ abstract class SecondaryModel extends Model
         //TODO: create issue in atk data and remove this when issue is resolved
         $this->onHook(
             Model::HOOK_AFTER_LOAD,
-            function(self $model) {
+            function (self $model) {
                 $model->dirty = [];
             }
         );
@@ -82,14 +81,16 @@ abstract class SecondaryModel extends Model
 
         $className = $this->get('model_class');
         if (!class_exists($className)) {
-            throw new Exception('Class ' . $className . ' does not exist in ' . __FUNCTION__);
+            throw new ClassNotExistsException('Class ' . $className . ' does not exist in ' . __FUNCTION__);
         }
 
         $parentObject = new $className($this->persistence);
         $parentObject->tryLoad($this->get('model_id'));
 
-        if(!$parentObject->loaded()) {
-            return null;
+        if (!$parentObject->loaded()) {
+            throw new ParentNotFoundException(
+                'Record of class ' . $className . ' with ID ' . $this->get('model_id') . ' not found'
+            );
         }
 
         return $parentObject;
