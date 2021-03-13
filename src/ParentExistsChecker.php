@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace secondarymodelforatk;
 
-use Atk4\Core\DiContainerTrait;
-
 /**
  * This class can be used to check, e.g. in cronjobs, if SecondaryModels without parent exist.
  * The field last_checked is used to indicate when the record was last checked.
@@ -14,19 +12,10 @@ use Atk4\Core\DiContainerTrait;
 class ParentExistsChecker
 {
 
-    use DiContainerTrait;
-
-    protected int $amountRecordsToCheck = 100;
-
-    public function __construct(array $defaults = [])
-    {
-        $this->setDefaults($defaults);
-    }
-
-    public function deleteSecondaryModelsWithoutParent(SecondaryModel $model): array
+    public function deleteSecondaryModelsWithoutParent(SecondaryModel $model, int $amount = 100): array
     {
         $deletedRecords = [];
-        $model->setLimit($this->amountRecordsToCheck);
+        $model->setLimit($amount);
         $model->setOrder(['last_checked' => 'asc', $model->id_field => 'asc']);
         foreach ($model as $record) {
             try {

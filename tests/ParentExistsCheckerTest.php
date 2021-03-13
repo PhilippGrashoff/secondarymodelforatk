@@ -87,9 +87,9 @@ class ParentExistsCheckerTest extends TestCase
         $email1 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
         $email2 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
 
-        $pec = new ParentExistsChecker(['amountRecordsToCheck' => 1]);
+        $pec = new ParentExistsChecker();
         $now = new \DateTime();
-        $pec->deleteSecondaryModelsWithoutParent(new Email($persistence));
+        $pec->deleteSecondaryModelsWithoutParent(new Email($persistence), 1);
         $email1->reload();
         $email2->reload();
         self::assertEqualsWithDelta(
@@ -146,5 +146,25 @@ class ParentExistsCheckerTest extends TestCase
             (int)(new \DateTime())->format('Hisv'),
             50
         );
+    }
+
+    public function testSetAmountToCheckAsParam(): void {
+        $persistence = $this->getSqliteTestPersistence();
+        $person1 = new Person($persistence);
+        $person1->save();
+        $email1 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
+        $email2 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
+
+        $pec = new ParentExistsChecker();
+        $pec->deleteSecondaryModelsWithoutParent(new Email($persistence), 1);
+
+        $email1->reload();
+        $email2->reload();
+        self::assertEqualsWithDelta(
+            (int)$email1->get('last_checked')->format('Hisv'),
+            (int)(new \DateTime())->format('Hisv'),
+            50
+        );
+        self::assertNull($email2->get('last_checked'));
     }
 }
