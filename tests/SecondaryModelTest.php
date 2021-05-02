@@ -3,7 +3,7 @@
 namespace secondarymodelforatk\tests;
 
 use atk4\core\AtkPhpunit\TestCase;
-use atk4\data\Persistence;
+use Atk4\Data\Persistence;
 use secondarymodelforatk\ClassNotExistsException;
 use secondarymodelforatk\ParentNotFoundException;
 use secondarymodelforatk\tests\testmodels\Email;
