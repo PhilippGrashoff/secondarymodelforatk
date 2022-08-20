@@ -2,7 +2,7 @@
 
 namespace secondarymodelforatk;
 
-use atk4\data\Model;
+use Atk4\Data\Model;
 
 
 abstract class SecondaryModel extends Model

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace secondarymodelforatk\tests\testmodels;
 
-use atk4\data\Model;
+use Atk4\Data\Model;
 use secondarymodelforatk\SecondaryModelRelationTrait;
 
 class Person extends Model {

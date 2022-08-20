@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace secondarymodelforatk\tests\testmodels;
 
-use atk4\data\Model;
+use Atk4\Data\Model;
 use secondarymodelforatk\SecondaryModelRelationTrait;
 
 
@@ -23,7 +23,7 @@ class Admin extends Model {
     {
          parent::init();
 
-         $this->hasOne('person_id', [Person::class]);
+         $this->hasOne('person_id', ['model' => [Person::class]]);
 
          $this->addSecondaryModelHasMany(
              Email::class,

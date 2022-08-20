@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace secondarymodelforatk;
 
-use atk4\data\Exception;
-use atk4\data\Model;
+use Atk4\Data\Exception;
+use Atk4\Data\Model;
 use secondarymodelforatk\Reference\HasManySecondaryModel;
 
 
@@ -33,7 +33,7 @@ trait SecondaryModelRelationTrait
             [HasManySecondaryModel::class],
             $className,
             [
-                function () use ($className, $ourClassName, $ourIdField) {
+                'model' => function () use ($className, $ourClassName, $ourIdField) {
                     return (new $className($this->persistence, ['parentObject' => $this]))
                         ->addCondition(
                             'model_class',

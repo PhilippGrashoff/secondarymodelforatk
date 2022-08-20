@@ -2,8 +2,8 @@
 
 namespace secondarymodelforatk\tests;
 
-use atk4\data\Exception;
-use atk4\data\Persistence;
+use Atk4\Data\Exception;
+use Atk4\Data\Persistence;
 use secondarymodelforatk\tests\testmodels\Admin;
 use secondarymodelforatk\tests\testmodels\Email;
 use secondarymodelforatk\tests\testmodels\Person;
