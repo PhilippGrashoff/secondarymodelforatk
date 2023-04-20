@@ -19,21 +19,20 @@ class ParentExistsChecker
         $deletedRecords = [];
         $model->setLimit($amount);
         $model->setOrder(['last_checked' => 'asc', $model->id_field => 'asc']);
-        foreach ($model as $record) {
-            try {
+        try {
+            foreach ($model as $record) {
                 $record->getParentObject();
                 $record->set('last_checked', new \DateTime());
                 $record->save();
-            } catch (ParentNotFoundException $e) {
-                $deletedRecords[] = clone $record;
-                $record->delete();
             }
-            catch (\Throwable $e) {
-                $ex = new Exception("Fehler in " . __FUNCTION__ . ': ' . $e->getMessage());
-                $ex->addMoreInfo('id', $record->getId());
-                $ex->addMoreInfo('model', get_class($record));
-                throw $ex;
-            }
+        } catch (ParentNotFoundException $e) {
+            $deletedRecords[] = clone $record;
+            $record->delete();
+        } catch (\Throwable $e) {
+            $ex = new Exception("Fehler in " . __FUNCTION__ . ': ' . $e->getMessage());
+            $ex->addMoreInfo('id', $record->getId());
+            $ex->addMoreInfo('model', get_class($record));
+            throw $ex;
         }
 
         return $deletedRecords;
