@@ -40,3 +40,4 @@ class ParentExistsChecker
 
         return $deletedRecords;
     }
+}
