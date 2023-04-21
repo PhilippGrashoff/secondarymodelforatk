@@ -33,8 +33,8 @@ class ParentExistsChecker
         } catch
         (\Throwable $e) {
             $ex = new Exception("Fehler in " . __FUNCTION__ . ': ' . $e->getMessage());
-            $ex->addMoreInfo('id', $record->getId());
-            $ex->addMoreInfo('model', get_class($record));
+            $ex->addMoreInfo('id', $model->getId());
+            $ex->addMoreInfo('model', get_class($model));
             throw $ex;
         }
 
