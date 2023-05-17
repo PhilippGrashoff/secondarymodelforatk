@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace secondarymodelforatk;
 
-use Atk4\Data\Exception;
-
 /**
  * This class can be used to check, e.g. in cronjobs, if SecondaryModels without parent exist.
  * The field last_checked is used to indicate when the record was last checked.
@@ -19,23 +17,15 @@ class ParentExistsChecker
         $deletedRecords = [];
         $model->setLimit($amount);
         $model->setOrder(['last_checked' => 'asc', $model->id_field => 'asc']);
-        try {
-            foreach ($model as $record) {
-                try {
-                    $record->getParentObject();
-                    $record->set('last_checked', new \DateTime());
-                    $record->save();
-                } catch (ParentNotFoundException $e) {
-                    $deletedRecords[] = clone $record;
-                    $record->delete();
-                }
+        foreach ($model as $record) {
+            try {
+                $record->getParentObject();
+                $record->set('last_checked', new \DateTime());
+                $record->save();
+            } catch (ParentNotFoundException $e) {
+                $deletedRecords[] = clone $record;
+                $record->delete();
             }
-        } catch
-        (\Throwable $e) {
-            $ex = new Exception("Fehler in " . __FUNCTION__ . ': ' . $e->getMessage());
-            $ex->addMoreInfo('id', $model->getId());
-            $ex->addMoreInfo('model', get_class($model));
-            throw $ex;
         }
 
         return $deletedRecords;
