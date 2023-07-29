@@ -13,7 +13,7 @@ trait SecondaryModelRelationTrait
 {
 
     /**
-     * use this in init() to quickly setup a relation to a SecondaryModel like Token.
+     * use this in init() to quickly set up a relation to a SecondaryModel like Token.
      * The only needed parameter is the className of the SecondaryMode.
      *
      * @param string $className The class name of the SecondaryModel, e.g. Email::class

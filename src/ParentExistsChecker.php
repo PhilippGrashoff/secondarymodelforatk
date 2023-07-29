@@ -16,7 +16,7 @@ class ParentExistsChecker
     {
         $deletedRecords = [];
         $model->setLimit($amount);
-        $model->setOrder(['last_checked' => 'asc', $model->id_field => 'asc']);
+        $model->setOrder(['last_checked' => 'asc', $model->idField => 'asc']);
         foreach ($model as $record) {
             try {
                 $record->getParentObject();

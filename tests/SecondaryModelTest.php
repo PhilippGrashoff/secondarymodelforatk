@@ -20,15 +20,15 @@ class SecondaryModelTest extends TestCase
         $model->save();
         $email = new Email($persistence);
         //no model_class set
-        self::assertEquals(null, $email->getParentObject());
+        self::assertEquals(null, $email->getParentEntity());
 
         //model_class, but no id
         $email->set('model_class', Person::class);
-        self::assertEquals(null, $email->getParentObject());
+        self::assertEquals(null, $email->getParentEntity());
 
         //Record with valid id
         $email->set('model_id', $model->get('id'));
-        $parentObject = $email->getParentObject();
+        $parentObject = $email->getParentEntity();
         self::assertTrue($parentObject instanceof Person);
         self::assertTrue($parentObject->loaded());
         self::assertSame($model->get('id'), $parentObject->get('id'));
@@ -43,7 +43,7 @@ class SecondaryModelTest extends TestCase
         $email->set('model_class', 'Duggu');
         $email->set('model_id', $model->get('id'));
         self::expectException(ClassNotExistsException::class);
-        $email->getParentObject();
+        $email->getParentEntity();
     }
 
     public function testGetParentObjectNullOnNonExistingRecord()
@@ -52,7 +52,7 @@ class SecondaryModelTest extends TestCase
         $email->set('model_class', Person::class);
         $email->set('model_id', 333);
         self::expectException(ParentNotFoundException::class);
-        $email->getParentObject();
+        $email->getParentEntity();
     }
 
     public function testSetParentObjectDataDuringInit()
@@ -61,7 +61,7 @@ class SecondaryModelTest extends TestCase
         $model = new Person($persistence);
         $model->save();
         $email = new Email($persistence, ['parentObject' => $model]);
-        $parentObject = $email->getParentObject();
+        $parentObject = $email->getParentEntity();
         self::assertTrue($parentObject instanceof Person);
         self::assertSame($model->get('id'), $parentObject->get('id'));
     }
