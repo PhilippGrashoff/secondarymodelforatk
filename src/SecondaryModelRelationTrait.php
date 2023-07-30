@@ -8,7 +8,9 @@ use Atk4\Data\Exception;
 use Atk4\Data\Model;
 use secondarymodelforatk\Reference\HasManySecondaryModel;
 
-
+/**
+ * @extends Model
+ */
 trait SecondaryModelRelationTrait
 {
 
@@ -20,8 +22,11 @@ trait SecondaryModelRelationTrait
      * @param bool $addDelete if true, a hook to delete all linked SecondaryModels when record is deleted is added
      * @param string $ourClassName defaults to get_class($this). Set differently if you want model_class field of
      *     SecondaryModel filled differently.
-     * @param string $ourIdField defaults to $this->id_field. Set differently if you want model_id field of
+     * @param ?string $ourIdField defaults to $this->id_field. Set differently if you want model_id field of
      *     SecondaryModel filled with the value of a different field.
+     * @return HasManySecondaryModel
+     * @throws Exception
+     * @throws \Atk4\Core\Exception
      */
     protected function addSecondaryModelHasMany(
         string $className,
@@ -29,19 +34,19 @@ trait SecondaryModelRelationTrait
         string $ourClassName = '',
         ?string $ourIdField = null
     ): HasManySecondaryModel {
-        $reference = $this->_hasReference(
+        $reference = $this->_addReference(
             [HasManySecondaryModel::class],
             $className,
             [
                 'model' => function () use ($className, $ourClassName, $ourIdField) {
-                    return (new $className($this->persistence, ['parentObject' => $this]))
+                    return (new $className($this->getPersistence()))
                         ->addCondition(
                             'model_class',
                             ($ourClassName ?: get_class($this))
                         );
                 },
                 'their_field' => 'model_id',
-                'our_field' => $ourIdField === null ? $this->id_field : $ourIdField,
+                'our_field' => $ourIdField === null ? $this->idField : $ourIdField,
                 'our_model_class' => $ourClassName ?: get_class($this)
             ]
         );
@@ -62,23 +67,24 @@ trait SecondaryModelRelationTrait
     }
 
     /**
-     * Add a new SecondayModel record which is linked to $this, e.g. add an Email to a Person.
+     * Add a new SecondaryModel record which is linked to $this, e.g. add an Email to a Person.
      * @param string $className The className of the SecondaryModel
      * @param $value //each SecondaryModel has a value field. This content will be set to value field.
      * @param array $additionalValues //if additional field values should be set, use this optional array.
      *     ['some_other_field' => 'SomeValue', 'and_another_field' => 'AndSomeOtherValue']
+     * @throws Exception
      */
     public function addSecondaryModelRecord(
         string $className,
         $value,
         array $additionalValues = []
     ): ?SecondaryModel {
-        if (!$this->hasRef($className)) {
+        if (!$this->hasReference($className)) {
             throw new Exception('Reference ' . $className . ' does not exist in ' . get_class($this));
         }
 
         //if $this was not saved yet, add Hook to create SBM after saving
-        if (!$this->loaded()) {
+        if (!$this->isLoaded()) {
             $this->onHook(
                 Model::HOOK_AFTER_SAVE,
                 function (self $model, $isUpdate) use ($className, $value, $additionalValues) {
@@ -91,10 +97,10 @@ trait SecondaryModelRelationTrait
             return null;
         }
 
-        $secondaryModel = new $className($this->persistence, ['parentObject' => $this]);
+        $secondaryModel = new $className($this->getPersistence());
         $secondaryModel->set('value', $value);
-        $secondaryModel->set('model_id', $this->get($this->getRef($className)->getOurFieldName()));
-        $secondaryModel->set('model_class', $this->getRef($className)->getOurModelClass());
+        $secondaryModel->set('model_id', $this->get($this->getReference($className)->getOurFieldName()));
+        $secondaryModel->set('model_class', $this->getReference($className)->getOurModelClass());
          foreach ($additionalValues as $fieldName => $fieldValue) {
             $secondaryModel->set($fieldName, $fieldValue);
         }

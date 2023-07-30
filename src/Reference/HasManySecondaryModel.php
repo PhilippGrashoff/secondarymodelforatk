@@ -10,15 +10,15 @@ use Atk4\Data\Reference\HasMany;
 class HasManySecondaryModel extends HasMany
 {
 
-    protected $our_model_class = '';
+    protected string $ourModelClass = '';
 
     public function getOurFieldName(): string
     {
-        return $this->our_field;
+        return $this->ourField;
     }
 
     public function getOurModelClass(): string
     {
-        return $this->our_model_class;
+        return $this->ourModelClass;
     }
 }

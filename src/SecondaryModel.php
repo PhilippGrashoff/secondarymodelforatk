@@ -59,7 +59,7 @@ abstract class SecondaryModel extends Model
      */
     public function getParentEntity(): ?Model
     {
-        if (
+        if ( //TODO this is crap! If SecondaryModel is loaded these fields have to be set! Enforce that these fields are non empty!
             $this->get('model_class') === null
             || $this->get('model_id') === null
         ) {
