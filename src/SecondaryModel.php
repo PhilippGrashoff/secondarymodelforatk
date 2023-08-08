@@ -67,6 +67,7 @@ abstract class SecondaryModel extends Model
             throw new ClassNotExistsException('Class ' . $className . ' does not exist in ' . __FUNCTION__);
         }
 
+        /** @var Model $parentEntity */
         $parentEntity = new $className($this->getPersistence());
         $parentEntity->tryLoad($this->get('model_id'));
 
