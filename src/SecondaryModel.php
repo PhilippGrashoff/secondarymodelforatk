@@ -57,15 +57,8 @@ abstract class SecondaryModel extends Model
     /**
      * tries to load its parent object based on model_class and model_id
      */
-    public function getParentEntity(): ?Model
+    public function getParentEntity(): Model
     {
-        if ( //TODO this is crap! If SecondaryModel is loaded these fields have to be set! Enforce that these fields are non empty!
-            $this->get('model_class') === null
-            || $this->get('model_id') === null
-        ) {
-            return null;
-        }
-
         $className = $this->get('model_class');
         if (!class_exists($className)) {
             throw new ClassNotExistsException('Class ' . $className . ' does not exist in ' . __FUNCTION__);

@@ -5,13 +5,13 @@ namespace secondarymodelforatk\tests;
 use secondarymodelforatk\ParentExistsChecker;
 use secondarymodelforatk\tests\testmodels\Email;
 use secondarymodelforatk\tests\testmodels\Person;
-use traitsforatkdata\TestCase;
+use atkextendedtestcase\TestCase;
 
 
 class ParentExistsCheckerTest extends TestCase
 {
 
-    protected $sqlitePersistenceModels = [
+    protected array $sqlitePersistenceModels = [
         Person::class,
         Email::class
     ];

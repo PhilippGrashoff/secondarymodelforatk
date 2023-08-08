@@ -7,12 +7,12 @@ use Atk4\Data\Persistence;
 use secondarymodelforatk\tests\testmodels\Admin;
 use secondarymodelforatk\tests\testmodels\Email;
 use secondarymodelforatk\tests\testmodels\Person;
-use traitsforatkdata\TestCase;
+use atkextendedtestcase\TestCase;
 
 class SecondaryModelRelationTraitTest extends TestCase
 {
 
-    protected $sqlitePersistenceModels = [
+    protected array $sqlitePersistenceModels = [
         Email::class,
         Person::class
     ];
