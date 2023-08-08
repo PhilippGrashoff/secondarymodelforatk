@@ -19,7 +19,7 @@ class ParentExistsCheckerTest extends TestCase
     public function testCheckLastCheckedIsSet(): void
     {
         $persistence = $this->getSqliteTestPersistence();
-        $person = new Person($persistence);
+        $person = (new Person($persistence))->createEntity();
         $person->save();
         $email = $person->addSecondaryModelRecord(Email::class, 'LALA');
         self::assertNull($email->get('last_checked'));
@@ -36,15 +36,15 @@ class ParentExistsCheckerTest extends TestCase
     public function testOnlyRecordsWithoutParentAreDeleted(): void
     {
         $persistence = $this->getSqliteTestPersistence();
-        $person1 = new Person($persistence);
+        $person1 = (new Person($persistence))->createEntity();
         $person1->save();
         $email1 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
         $email2 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
-        $person2 = new Person($persistence);
+        $person2 = (new Person($persistence))->createEntity();
         $person2->save();
         $email3 = $person2->addSecondaryModelRecord(Email::class, 'LALA');
         $email4 = $person2->addSecondaryModelRecord(Email::class, 'LALA');
-        $person3 = new Person($persistence);
+        $person3 = (new Person($persistence))->createEntity();
         $person3->save();
         $email5 = $person3->addSecondaryModelRecord(Email::class, 'LALA');
         self::assertSame(
@@ -82,7 +82,7 @@ class ParentExistsCheckerTest extends TestCase
     public function testOrderCheckOldestFirst(): void
     {
         $persistence = $this->getSqliteTestPersistence();
-        $person1 = new Person($persistence);
+        $person1 = (new Person($persistence))->createEntity();
         $person1->save();
         $email1 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
         $email2 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
@@ -121,7 +121,7 @@ class ParentExistsCheckerTest extends TestCase
     public function testSecondaryModelsWithModelClassNullAreNotTouched(): void
     {
         $persistence = $this->getSqliteTestPersistence();
-        $person1 = new Person($persistence);
+        $person1 = (new Person($persistence))->createEntity();
         $person1->save();
         $email1 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
         $email2 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
@@ -150,7 +150,7 @@ class ParentExistsCheckerTest extends TestCase
 
     public function testSetAmountToCheckAsParam(): void {
         $persistence = $this->getSqliteTestPersistence();
-        $person1 = new Person($persistence);
+        $person1 = (new Person($persistence))->createEntity();
         $person1->save();
         $email1 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
         $email2 = $person1->addSecondaryModelRecord(Email::class, 'LALA');

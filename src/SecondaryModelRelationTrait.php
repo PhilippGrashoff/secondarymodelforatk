@@ -46,9 +46,9 @@ trait SecondaryModelRelationTrait
                             ($ourClassName ?: get_class($this))
                         );
                 },
-                'their_field' => 'model_id',
-                'our_field' => $ourIdField === null ? $this->idField : $ourIdField,
-                'our_model_class' => $ourClassName ?: get_class($this)
+                'theirField' => 'model_id',
+                'ourField' => $ourIdField === null ? $this->idField : $ourIdField,
+                'ourModelClass' => $ourClassName ?: get_class($this)
             ]
         );
 
@@ -80,16 +80,10 @@ trait SecondaryModelRelationTrait
         string|int|float $value,
         array $additionalValues = []
     ): SecondaryModel {
-        if (!$this->hasReference($className)) {
-            throw new Exception('Reference ' . $className . ' does not exist in ' . get_class($this));
-        }
-
-        $secondaryModel = new $className($this->getPersistence());
-        if (!$secondaryModel instanceof SecondaryModel) {
-            throw new Exception(__FUNCTION__ . 'may be only used with SecondaryModel references');
-        }
         /** @var HasManySecondaryModel $secondaryModelReference */
-        $secondaryModelReference = $this->getReference($className);
+        $secondaryModelReference = $this->getModel()->getReference($className);
+        $secondaryModel= new $className($this->getPersistence());
+        $secondaryModel->createEntity();
         $secondaryModel->set('value', $value);
         $secondaryModel->set('model_id', $this->get($secondaryModelReference->getOurFieldName()));
         $secondaryModel->set('model_class', $secondaryModelReference->getOurModelClass());
@@ -118,7 +112,6 @@ trait SecondaryModelRelationTrait
     ): SecondaryModel {
         $this->assertIsLoaded();
         //will throw exception if ref does not exist
-        /** @var SecondaryModel $secondaryModel */
         $secondaryModel = $this->ref($className);
         if (!$secondaryModel instanceof SecondaryModel) {
             throw new Exception(__FUNCTION__ . 'may be only used with SecondaryModel references');
