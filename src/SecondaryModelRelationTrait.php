@@ -33,7 +33,8 @@ trait SecondaryModelRelationTrait
         bool $addDelete = true,
         string $ourClassName = '',
         ?string $ourIdField = null
-    ): HasManySecondaryModel {
+    ): HasManySecondaryModel {#
+        /** @var HasManySecondaryModel $reference */
         $reference = $this->_addReference(
             [HasManySecondaryModel::class],
             $className,
@@ -69,14 +70,14 @@ trait SecondaryModelRelationTrait
     /**
      * Add a new SecondaryModel record which is linked to $this, e.g. add an Email to a Person.
      * @param string $className The className of the SecondaryModel
-     * @param $value //each SecondaryModel has a value field. This content will be set to value field.
-     * @param array $additionalValues //if additional field values should be set, use this optional array.
+     * @param string|int|float $value //each SecondaryModel has a value field. This content will be set to value field.
+     * @param array<string, string> $additionalValues //if additional field values should be set, use this optional array.
      *     ['some_other_field' => 'SomeValue', 'and_another_field' => 'AndSomeOtherValue']
-     * @throws Exception
+     * @throws Exception|\Atk4\Core\Exception
      */
     public function addSecondaryModelRecord(
         string $className,
-        $value,
+        string|int|float $value,
         array $additionalValues = []
     ): SecondaryModel {
         if (!$this->hasReference($className)) {
@@ -84,9 +85,14 @@ trait SecondaryModelRelationTrait
         }
 
         $secondaryModel = new $className($this->getPersistence());
+        if (!$secondaryModel instanceof SecondaryModel) {
+            throw new Exception(__FUNCTION__ . 'may be only used with SecondaryModel references');
+        }
+        /** @var HasManySecondaryModel $secondaryModelReference */
+        $secondaryModelReference = $this->getReference($className);
         $secondaryModel->set('value', $value);
-        $secondaryModel->set('model_id', $this->get($this->getReference($className)->getOurFieldName()));
-        $secondaryModel->set('model_class', $this->getReference($className)->getOurModelClass());
+        $secondaryModel->set('model_id', $this->get($secondaryModelReference->getOurFieldName()));
+        $secondaryModel->set('model_class', $secondaryModelReference->getOurModelClass());
         foreach ($additionalValues as $fieldName => $fieldValue) {
             $secondaryModel->set($fieldName, $fieldValue);
         }
@@ -96,21 +102,32 @@ trait SecondaryModelRelationTrait
     }
 
     /**
-     * @throws \Atk4\Core\Exception
+     * @param string $className
+     * @param string|int $id
+     * @param string|int|float $value
+     * @param array<string, string> $additionalValues
+     * @return SecondaryModel
      * @throws Exception
+     * @throws \Atk4\Core\Exception
      */
     public function updateSecondaryModelRecord(
         string $className,
-        $id,
-        string $value,
+        string|int $id,
+        string|int|float $value,
         array $additionalValues = []
     ): SecondaryModel {
         $this->assertIsLoaded();
         //will throw exception if ref does not exist
+        /** @var SecondaryModel $secondaryModel */
         $secondaryModel = $this->ref($className);
+        if (!$secondaryModel instanceof SecondaryModel) {
+            throw new Exception(__FUNCTION__ . 'may be only used with SecondaryModel references');
+        }
         $secondaryModel->load($id);
         $secondaryModel->set('value', $value);
-        $secondaryModel->setMulti($additionalValues);
+        foreach ($additionalValues as $fieldName => $fieldValue) {
+            $secondaryModel->set($fieldName, $fieldValue);
+        }
         $secondaryModel->save();
 
         return $secondaryModel;
@@ -121,11 +138,14 @@ trait SecondaryModelRelationTrait
      */
     public function deleteSecondaryModelRecord(
         string $className,
-        $id
+        string|int $id
     ): SecondaryModel {
         $this->assertIsLoaded();
-        //will throw exception if ref does not exist
+        /** @var SecondaryModel $secondaryModel */
         $secondaryModel = $this->ref($className);
+        if (!$secondaryModel instanceof SecondaryModel) {
+            throw new Exception(__FUNCTION__ . 'may be only used with SecondaryModel references');
+        }
         $secondaryModel->load($id);
         $clone = clone $secondaryModel;
         $secondaryModel->delete();
