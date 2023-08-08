@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace secondarymodelforatk\Reference;
 
-use Atk4\Data\Field;
 use Atk4\Data\Reference\HasMany;
 
 class HasManySecondaryModel extends HasMany

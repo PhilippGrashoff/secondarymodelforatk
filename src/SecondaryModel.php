@@ -2,6 +2,7 @@
 
 namespace secondarymodelforatk;
 
+use Atk4\Core\Exception;
 use Atk4\Data\Model;
 
 
@@ -56,6 +57,8 @@ abstract class SecondaryModel extends Model
 
     /**
      * tries to load its parent object based on model_class and model_id
+     * @throws ParentNotFoundException
+     * @throws ClassNotExistsException
      */
     public function getParentEntity(): Model
     {
@@ -64,21 +67,25 @@ abstract class SecondaryModel extends Model
             throw new ClassNotExistsException('Class ' . $className . ' does not exist in ' . __FUNCTION__);
         }
 
-        $parentObject = new $className($this->getPersistence());
-        $parentObject->tryLoad($this->get('model_id'));
+        $parentEntity = new $className($this->getPersistence());
+        $parentEntity->tryLoad($this->get('model_id'));
 
-        if (!$parentObject->loaded()) {
+        if (!$parentEntity->isLoaded()) {
             throw new ParentNotFoundException(
-                'Record of class ' . $className . ' with ID ' . $this->get('model_id') . ' not found'
+                'Entity of class ' . $className . ' with ID ' . $this->get('model_id') . ' not found'
             );
         }
 
-        return $parentObject;
+        return $parentEntity;
     }
 
+    /**
+     * @throws Exception
+     * @throws \Atk4\Data\Exception
+     */
     public function setParentEntity(Model $entity): void
     {
-        $entity->assertIsEntity();
+        $entity->assertIsLoaded();
         $this->set('model_class', get_class($entity));
         $this->set('model_id', $entity->getId());
     }

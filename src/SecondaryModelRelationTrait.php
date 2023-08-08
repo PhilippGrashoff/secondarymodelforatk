@@ -9,7 +9,7 @@ use Atk4\Data\Model;
 use secondarymodelforatk\Reference\HasManySecondaryModel;
 
 /**
- * @extends Model
+ * @extends Model<Model>
  */
 trait SecondaryModelRelationTrait
 {
@@ -38,7 +38,7 @@ trait SecondaryModelRelationTrait
             [HasManySecondaryModel::class],
             $className,
             [
-                'model' => function () use ($className, $ourClassName, $ourIdField) {
+                'model' => function () use ($className, $ourClassName) {
                     return (new $className($this->getPersistence()))
                         ->addCondition(
                             'model_class',
@@ -95,13 +95,17 @@ trait SecondaryModelRelationTrait
         return $secondaryModel;
     }
 
+    /**
+     * @throws \Atk4\Core\Exception
+     * @throws Exception
+     */
     public function updateSecondaryModelRecord(
         string $className,
         $id,
         string $value,
         array $additionalValues = []
     ): SecondaryModel {
-        $this->assertIsEntity();
+        $this->assertIsLoaded();
         //will throw exception if ref does not exist
         $secondaryModel = $this->ref($className);
         $secondaryModel->load($id);
@@ -112,11 +116,14 @@ trait SecondaryModelRelationTrait
         return $secondaryModel;
     }
 
+    /**
+     * @throws Exception
+     */
     public function deleteSecondaryModelRecord(
         string $className,
         $id
     ): SecondaryModel {
-        $this->assertIsEntity();
+        $this->assertIsLoaded();
         //will throw exception if ref does not exist
         $secondaryModel = $this->ref($className);
         $secondaryModel->load($id);
@@ -131,7 +138,7 @@ trait SecondaryModelRelationTrait
      */
     /*public function getFirstSecondaryModelRecord(string $className): ?SecondaryModel
     {
-        $this->assertIsEntity();
+        $this->assertIsLoaded();
 
         //will throw exception if ref does not exist
         $secondaryModel = $this->ref($className);
@@ -149,7 +156,7 @@ trait SecondaryModelRelationTrait
      */
     /*public function getFirstSecondaryModelValue(string $className): string
     {
-        $this->assertIsEntity();
+        $this->assertIsLoaded();
         //will throw exception if ref does not exist
         $secondaryModel = $this->ref($className);
         $secondaryModel->addCondition('value', '!=', null);

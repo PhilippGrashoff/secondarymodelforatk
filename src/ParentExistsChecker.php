@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace secondarymodelforatk;
 
 use Atk4\Core\Exception;
+use DateTime;
 
 /**
  * This class can be used to check, e.g. in cronjobs, if SecondaryModels without parent exist.
@@ -28,10 +29,10 @@ class ParentExistsChecker
         $model->setOrder(['last_checked' => 'asc', $model->idField => 'asc']);
         foreach ($model as $entity) {
             try {
-                $entity->getParentObject();
-                $entity->set('last_checked', new \DateTime());
+                $entity->getParentEntity();
+                $entity->set('last_checked', new DateTime());
                 $entity->save();
-            } catch (ParentNotFoundException $e) {
+            } catch (ParentNotFoundException) {
                 $deletedRecords[] = clone $entity;
                 $entity->delete();
             }
