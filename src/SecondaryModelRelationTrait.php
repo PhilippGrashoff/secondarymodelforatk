@@ -110,11 +110,8 @@ trait SecondaryModelRelationTrait
         array $additionalValues = []
     ): SecondaryModel {
         $this->assertIsLoaded();
-        //will throw exception if ref does not exist
+        /** @var SecondaryModel $secondaryModel */
         $secondaryModel = $this->ref($className)->load($id);
-        if (!$secondaryModel instanceof SecondaryModel) {
-            throw new Exception(__FUNCTION__ . 'may be only used with SecondaryModel references');
-        }
         $secondaryModel->set('value', $value);
         foreach ($additionalValues as $fieldName => $fieldValue) {
             $secondaryModel->set($fieldName, $fieldValue);
@@ -134,9 +131,6 @@ trait SecondaryModelRelationTrait
         $this->assertIsLoaded();
         /** @var SecondaryModel $secondaryModel */
         $secondaryModel = $this->ref($className)->load($id);
-        if (!$secondaryModel instanceof SecondaryModel) {
-            throw new Exception(__FUNCTION__ . 'may be only used with SecondaryModel references');
-        }
         $secondaryModel->delete();
 
         return $secondaryModel;
