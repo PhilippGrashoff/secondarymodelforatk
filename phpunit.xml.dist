@@ -10,7 +10,7 @@
             <directory>tests</directory>
         </include>
         <report>
-            <php outputFile="tests/coverage/phpunit.cov"/>
+            <php outputFile="coverage/phpunit.cov"/>
         </report>
     </coverage>
 </phpunit>
