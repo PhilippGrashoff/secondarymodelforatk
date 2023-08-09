@@ -82,8 +82,7 @@ trait SecondaryModelRelationTrait
     ): SecondaryModel {
         /** @var HasManySecondaryModel $secondaryModelReference */
         $secondaryModelReference = $this->getModel()->getReference($className);
-        $secondaryModel= new $className($this->getPersistence());
-        //$secondaryModel->createEntity();
+        $secondaryModel= (new $className($this->getPersistence()))->createEntity();
         $secondaryModel->set('value', $value);
         $secondaryModel->set('model_id', $this->get($secondaryModelReference->getOurFieldName()));
         $secondaryModel->set('model_class', $secondaryModelReference->getOurModelClass());

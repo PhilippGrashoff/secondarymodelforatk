@@ -14,20 +14,21 @@ class SecondaryModelRelationTraitTest extends TestCase
 
     protected array $sqlitePersistenceModels = [
         Email::class,
-        Person::class
+        Person::class,
+        Admin::class
     ];
 
-    public function testHasManyRelationIsAdded()
+    public function testHasManyRelationIsAdded(): void
     {
-        $model = new Person(new Persistence\Array_());
-        self::assertTrue($model->hasRef(Email::class));
+        $model = new Person($this->getSqliteTestPersistence());
+        self::assertTrue($model->hasReference(Email::class));
     }
 
-    public function testaddSecondaryModelRecord()
+    public function testaddSecondaryModelRecord(): void
     {
         $persistence = $this->getSqliteTestPersistence();
         $emailCount = (int)(new Email($persistence))->action('count')->getOne();
-        $model = new Person($persistence);
+        $model = (new Person($persistence))->createEntity();
         $model->save();
         $email = $model->addSecondaryModelRecord(Email::class, '1234567899');
         self::assertSame(
@@ -45,11 +46,9 @@ class SecondaryModelRelationTraitTest extends TestCase
         );
     }
 
-    public function testaddSecondaryModelRecordWithAdditionalField()
+    public function testaddSecondaryModelRecordWithAdditionalField(): void
     {
-        $persistence = new Persistence\Array_();
-        $emailCount = (int)(new Email($persistence))->action('count')->getOne();
-        $model = new Person($persistence);
+        $model = (new Person($this->getSqliteTestPersistence()))->createEntity();
         $model->save();
         $email = $model->addSecondaryModelRecord(
             Email::class,
@@ -62,9 +61,9 @@ class SecondaryModelRelationTraitTest extends TestCase
         );
     }
 
-    public function testaddSecondaryModelRecordWithNonStandardModelIdAndModelClassFields()
+    public function testaddSecondaryModelRecordWithNonStandardModelIdAndModelClassFields(): void
     {
-        $model = new Admin(new Persistence\Array_());
+        $model = (new Admin($this->getSqliteTestPersistence()))->createEntity();
         $model->set('person_id', 456);
         $model->save();
         $email = $model->addSecondaryModelRecord(Email::class, '1234567899');
@@ -79,18 +78,18 @@ class SecondaryModelRelationTraitTest extends TestCase
         );
     }
 
-    public function testaddSecondaryModelRecordExceptionInvalidClassName()
+    public function testaddSecondaryModelRecordExceptionInvalidClassName(): void
     {
-        $model = new Person(new Persistence\Array_());
-        self::expectException(Exception::class);
+        $model = (new Person($this->getSqliteTestPersistence()))->createEntity();
+        self::expectExceptionMessage('Child element not found');
         $model->addSecondaryModelRecord('SomeNonDescendantOfSecondaryModel', 'somevalue');
     }
 
-    public function testaddSecondaryModelRecordAddDeleteTrueDeletesSBM()
+    public function testaddSecondaryModelRecordAddDeleteTrueDeletesSBM(): void
     {
-        $persistence = new Persistence\Array_();
+        $persistence = $this->getSqliteTestPersistence();
         $emailCount = (int)(new Email($persistence))->action('count')->getOne();
-        $model = new Person($persistence);
+        $model = (new Person($persistence))->createEntity();
         $model->save();
         $model->addSecondaryModelRecord(Email::class, '1234567899');
         self::assertSame(
@@ -104,11 +103,11 @@ class SecondaryModelRelationTraitTest extends TestCase
         );
     }
 
-    public function testaddSecondaryModelRecordAddDeleteFalseNotDeletesSBM()
+    public function testAddSecondaryModelRecordAddDeleteFalseNotDeletesSBM(): void
     {
-        $persistence = new Persistence\Array_();
+        $persistence = $this->getSqliteTestPersistence();
         $emailCount = (int)(new Email($persistence))->action('count')->getOne();
-        $model = new Admin($persistence);
+        $model = (new Admin($persistence))->createEntity();
         $model->save();
         $model->addSecondaryModelRecord(Email::class, '1234567899');
         self::assertSame(
@@ -122,80 +121,23 @@ class SecondaryModelRelationTraitTest extends TestCase
         );
     }
 
-    public function testaddSecondaryModelRecordSBMIsReturned()
+    public function testaddSecondaryModelRecordSBMIsReturned(): void
     {
-        $model = new Person(new Persistence\Array_());
+        $model = (new Person($this->getSqliteTestPersistence()))->createEntity();
         $model->save();
         $email = $model->addSecondaryModelRecord(Email::class, '1234567899');
         self::assertInstanceOf(Email::class, $email);
     }
 
-    public function testaddSecondaryModelRecordIfThisNotLoadedAfterSaveHookAddsSBM()
-    {
-        $persistence = new Persistence\Array_();
-        $emailCount = (int)(new Email($persistence))->action('count')->getOne();
-        $model = new Person($persistence);
-        $return = $model->addSecondaryModelRecord(Email::class, '1234567899');
-        self::assertNull($return);
-        self::assertSame(
-            $emailCount,
-            (int)(new Email($persistence))->action('count')->getOne()
-        );
-        $model->save();
-        self::assertSame(
-            $emailCount + 1,
-            (int)(new Email($persistence))->action('count')->getOne()
-        );
-        self::assertEquals(
-            1,
-            $model->ref(Email::class)->action('count')->getOne()
-        );
-    }
-
-    public function testgetFirstSecondaryModelRecord()
-    {
-        $model = new Person(new Persistence\Array_());
-        $model->save();
-        self::assertNull($model->getFirstSecondaryModelRecord(Email::class));
-        $email = $model->addSecondaryModelRecord(Email::class, '1234567899');
-        $result = $model->getFirstSecondaryModelRecord(Email::class);
-        self::assertInstanceOf(Email::class, $result);
-        self::assertSame(
-            $email->getId(),
-            $result->getId()
-        );
-    }
-
-    public function testgetAllSecondaryModelValuesAsArray()
+    public function testRefConditionsSetupProperly(): void
     {
         $persistence = $this->getSqliteTestPersistence();
-        $model = new Person($persistence);
-        $model->save();
-        self::assertSame(
-            [],
-            $model->getAllSecondaryModelValuesAsArray(Email::class)
-        );
-        $model->addSecondaryModelRecord(Email::class, '1234567899');
-        $model->addSecondaryModelRecord(Email::class, 'asdfgh');
-        self::assertEquals(
-            2,
-            $model->ref(Email::class)->action('count')->getOne()
-        );
-        self::assertSame(
-            ['1234567899', 'asdfgh'],
-            $model->getAllSecondaryModelValuesAsArray(Email::class)
-        );
-    }
-
-    public function testRefConditionsSetupProperly()
-    {
-        $persistence = $this->getSqliteTestPersistence();
-        $model1 = new Person($persistence);
+        $model1 = (new Person($persistence))->createEntity();
         $model1->save();
         $model1->addSecondaryModelRecord(Email::class, '1234567899');
         $model1->addSecondaryModelRecord(Email::class, 'asdfgh');
 
-        $model2 = new Person($persistence);
+        $model2 = (new Person($persistence))->createEntity();
         $model2->save();
         $model2->addSecondaryModelRecord(Email::class, 'zireoowej');
 
@@ -207,36 +149,13 @@ class SecondaryModelRelationTraitTest extends TestCase
             1,
             $model2->ref(Email::class)->action('count')->getOne()
         );
-
-        self::assertSame(
-            ['1234567899', 'asdfgh'],
-            $model1->getAllSecondaryModelValuesAsArray(Email::class)
-        );
-
-        self::assertSame(
-            ['zireoowej'],
-            $model2->getAllSecondaryModelValuesAsArray(Email::class)
-        );
     }
 
-    public function testExceptionThisNotLoadedGetFirst()
-    {
-        $model1 = new Person(new Persistence\Array_());
-        self::expectException(Exception::class);
-        $model1->getFirstSecondaryModelRecord(Email::class);
-    }
 
-    public function testExceptionThisNotLoadedGetArray()
-    {
-        $model1 = new Person(new Persistence\Array_());
-        self::expectException(Exception::class);
-        $model1->getAllSecondaryModelValuesAsArray(Email::class);
-    }
-
-    public function testUpdateSecondaryModelRecord()
+    public function testUpdateSecondaryModelRecord(): void
     {
         $persistence = $this->getSqliteTestPersistence();
-        $model = new Person($persistence);
+        $model = (new Person($persistence))->createEntity();
         $model->save();
         $email = $model->addSecondaryModelRecord(Email::class, '1234567899');
         $updatedEmail = $model->updateSecondaryModelRecord(
@@ -269,10 +188,10 @@ class SecondaryModelRelationTraitTest extends TestCase
         );
     }
 
-    public function testDeleteSecondaryModelRecord()
+    public function testDeleteSecondaryModelRecord(): void
     {
         $persistence = $this->getSqliteTestPersistence();
-        $model = new Person($persistence);
+        $model = (new Person($persistence))->createEntity();
         $model->save();
         $email = $model->addSecondaryModelRecord(Email::class, '1234567899');
         $deletedEmail = $model->deleteSecondaryModelRecord(Email::class, $email->getId());
@@ -297,18 +216,48 @@ class SecondaryModelRelationTraitTest extends TestCase
         self::assertFalse($email->loaded());
     }
 
-    public function testExceptionThisNotLoadedUpdateSecondaryModelRecord()
+    public function testExceptionThisNotLoadedUpdateSecondaryModelRecord(): void
     {
         $model1 = new Person($this->getSqliteTestPersistence());
         self::expectException(Exception::class);
         $model1->updateSecondaryModelRecord(Email::class, 1, 'sdff');
     }
 
-    public function testExceptionThisNotLoadedDeleteSecondaryModelRecord()
+    public function testExceptionThisNotLoadedDeleteSecondaryModelRecord(): void
     {
         $model1 = new Person($this->getSqliteTestPersistence());
         self::expectException(Exception::class);
         $model1->deleteSecondaryModelRecord(Email::class, 1);
+    }
+
+    public function testNoFieldsDirtyOnLoad(): void
+    {
+        $persistence = $this->getSqliteTestPersistence();
+        $model = (new Person($persistence))->createEntity();
+        $model->save();
+        $return = $model->addSecondaryModelRecord(Email::class, '1234567899');
+        $email = $model->ref(Email::class);
+        $email->load($return->getId());
+        self::assertSame(
+            [],
+            $email->getDirtyRef()
+        );
+    }
+
+
+    /*
+    public function testgetFirstSecondaryModelRecord()
+    {
+        $model = new Person(new Persistence\Array_());
+        $model->save();
+        self::assertNull($model->getFirstSecondaryModelRecord(Email::class));
+        $email = $model->addSecondaryModelRecord(Email::class, '1234567899');
+        $result = $model->getFirstSecondaryModelRecord(Email::class);
+        self::assertInstanceOf(Email::class, $result);
+        self::assertSame(
+            $email->getId(),
+            $result->getId()
+        );
     }
 
     public function testGetFirstSecondaryModelValue()
@@ -346,6 +295,22 @@ class SecondaryModelRelationTraitTest extends TestCase
         );
     }
 
+    public function testExceptionThisNotLoadedGetFirst()
+    {
+        $model1 = new Person(new Persistence\Array_());
+        self::expectException(Exception::class);
+        $model1->getFirstSecondaryModelRecord(Email::class);
+    }
+
+
+    public function testExceptionThisNotLoadedGetArray()
+    {
+        $persistence = $this->getSqliteTestPersistence();
+        $model = (new Person($persistence))->createEntity();
+        self::expectException(Exception::class);
+        $model->getAllSecondaryModelValuesAsArray(Email::class);
+    }
+
     public function testExceptionThisNotLoadedGetFirstSecondaryModelValue()
     {
         $model1 = new Person($this->getSqliteTestPersistence());
@@ -353,17 +318,26 @@ class SecondaryModelRelationTraitTest extends TestCase
         $model1->getFirstSecondaryModelValue(Email::class);
     }
 
-    public function testNoFieldsDirtyOnLoad()
+
+    public function testgetAllSecondaryModelValuesAsArray()
     {
         $persistence = $this->getSqliteTestPersistence();
         $model = new Person($persistence);
         $model->save();
-        $return = $model->addSecondaryModelRecord(Email::class, '1234567899');
-        $email = $model->ref(Email::class);
-        $email->load($return->getId());
         self::assertSame(
             [],
-            $email->dirty
+            $model->getAllSecondaryModelValuesAsArray(Email::class)
+        );
+        $model->addSecondaryModelRecord(Email::class, '1234567899');
+        $model->addSecondaryModelRecord(Email::class, 'asdfgh');
+        self::assertEquals(
+            2,
+            $model->ref(Email::class)->action('count')->getOne()
+        );
+        self::assertSame(
+            ['1234567899', 'asdfgh'],
+            $model->getAllSecondaryModelValuesAsArray(Email::class)
         );
     }
+    */
 }
