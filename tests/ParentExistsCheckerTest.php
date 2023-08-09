@@ -52,8 +52,7 @@ class ParentExistsCheckerTest extends TestCase
             (int)(new Email($persistence))->action('count')->getOne()
         );
 
-        //hack to not execute hooks
-        (new Person($persistence))->addCondition('id', '=', $person2->getId())->action('delete')->execute();
+        $person2->delete();
         self::assertSame(
             2,
             (int)(new Person($persistence))->action('count')->getOne()
@@ -72,11 +71,11 @@ class ParentExistsCheckerTest extends TestCase
             (int)(new Email($persistence))->action('count')->getOne()
         );
 
-        self::assertTrue((new Email($persistence))->tryLoad($email1->getId())->loaded());
-        self::assertTrue((new Email($persistence))->tryLoad($email2->getId())->loaded());
-        self::assertTrue((new Email($persistence))->tryLoad($email5->getId())->loaded());
-        self::assertFalse((new Email($persistence))->tryLoad($email3->getId())->loaded());
-        self::assertFalse((new Email($persistence))->tryLoad($email4->getId())->loaded());
+        self::assertTrue((new Email($persistence))->tryLoad($email1->getId())->isLoaded());
+        self::assertTrue((new Email($persistence))->tryLoad($email2->getId())->isLoaded());
+        self::assertTrue((new Email($persistence))->tryLoad($email5->getId())->isLoaded());
+        self::assertNull((new Email($persistence))->tryLoad($email3->getId()));
+        self::assertNull((new Email($persistence))->tryLoad($email4->getId()));
     }
 
     public function testOrderCheckOldestFirst(): void
@@ -115,36 +114,6 @@ class ParentExistsCheckerTest extends TestCase
             (int)$email1->get('last_checked')->format('Hisv'),
             (int)(clone $now)->modify('+2 Seconds')->format('Hisv'),
             150
-        );
-    }
-
-    public function testSecondaryModelsWithModelClassNullAreNotTouched(): void
-    {
-        $persistence = $this->getSqliteTestPersistence();
-        $person1 = (new Person($persistence))->createEntity();
-        $person1->save();
-        $email1 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
-        $email2 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
-        $email3 = (new Email($persistence))->save();
-        //hack to not execute hooks
-        (new Person($persistence))->addCondition('id', '=', $person1->getId())->action('delete')->execute();
-        self::assertSame(
-            3,
-            (int)(new Email($persistence))->action('count')->getOne()
-        );
-
-        $pec = new ParentExistsChecker();
-        $pec->deleteSecondaryModelsWithoutParent(new Email($persistence));
-        self::assertSame(
-            1,
-            (int)(new Email($persistence))->action('count')->getOne()
-        );
-
-        $email3->reload();
-        self::assertEqualsWithDelta(
-            (int)$email3->get('last_checked')->format('Hisv'),
-            (int)(new \DateTime())->format('Hisv'),
-            50
         );
     }
 

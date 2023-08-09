@@ -2,7 +2,6 @@
 
 namespace secondarymodelforatk\tests;
 
-use Atk4\Core\Exception;
 use atkextendedtestcase\TestCase;
 use secondarymodelforatk\ClassNotExistsException;
 use secondarymodelforatk\ParentNotFoundException;
@@ -29,7 +28,6 @@ class SecondaryModelTest extends TestCase
         $email->save();
         $parent = $email->getParentEntity();
         self::assertTrue($parent instanceof Person);
-        var_dump($parent->get('id'));
         self::assertTrue($parent->isLoaded());
         self::assertSame($person->getId(), $parent->getId());
     }
@@ -55,5 +53,17 @@ class SecondaryModelTest extends TestCase
         $email->save();
         self::expectException(ParentNotFoundException::class);
         $email->getParentEntity();
+    }
+
+    public function testSetParentEntity(): void
+    {
+        $persistence = $this->getSqliteTestPersistence();
+        $person = (new Person($persistence))->createEntity();
+        $person->save();
+        $email = (new Email($persistence))->createEntity();
+        $email->setParentEntity($person);
+
+        self::assertSame($person->getId(), $email->get('model_id'));
+        self::assertSame(Person::class, $email->get('model_class'));
     }
 }

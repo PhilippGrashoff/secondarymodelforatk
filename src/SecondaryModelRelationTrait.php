@@ -18,8 +18,8 @@ trait SecondaryModelRelationTrait
      * use this in init() to quickly set up a relation to a SecondaryModel like Token.
      * The only needed parameter is the className of the SecondaryMode.
      *
-     * @param string $className The class name of the SecondaryModel, e.g. Email::class
-     * @param bool $addDelete if true, a hook to delete all linked SecondaryModels when record is deleted is added
+     * @param class-string<SecondaryModel> $className The class name of the SecondaryModel, e.g. Email::class
+     * @param bool $addDeleteHook if true, a hook to delete all linked SecondaryModels when record is deleted is added
      * @param string $ourClassName defaults to get_class($this). Set differently if you want model_class field of
      *     SecondaryModel filled differently.
      * @param ?string $ourIdField defaults to $this->id_field. Set differently if you want model_id field of
@@ -30,7 +30,7 @@ trait SecondaryModelRelationTrait
      */
     protected function addSecondaryModelHasMany(
         string $className,
-        bool $addDelete = true,
+        bool $addDeleteHook = true,
         string $ourClassName = '',
         ?string $ourIdField = null
     ): HasManySecondaryModel {#
@@ -53,7 +53,7 @@ trait SecondaryModelRelationTrait
         );
 
         //add a hook that automatically deletes SecondaryModel records when main record is deleted
-        if ($addDelete) {
+        if ($addDeleteHook) {
             $this->onHook(
                 Model::HOOK_BEFORE_DELETE,
                 function (self $model) use ($className) {
@@ -69,7 +69,7 @@ trait SecondaryModelRelationTrait
 
     /**
      * Add a new SecondaryModel record which is linked to $this, e.g. add an Email to a Person.
-     * @param string $className The className of the SecondaryModel
+     * @param class-string<SecondaryModel> $className The className of the SecondaryModel
      * @param string|int|float $value //each SecondaryModel has a value field. This content will be set to value field.
      * @param array<string, string> $additionalValues //if additional field values should be set, use this optional array.
      *     ['some_other_field' => 'SomeValue', 'and_another_field' => 'AndSomeOtherValue']
@@ -82,7 +82,7 @@ trait SecondaryModelRelationTrait
     ): SecondaryModel {
         /** @var HasManySecondaryModel $secondaryModelReference */
         $secondaryModelReference = $this->getModel()->getReference($className);
-        $secondaryModel= (new $className($this->getPersistence()))->createEntity();
+        $secondaryModel = (new $className($this->getPersistence()))->createEntity();
         $secondaryModel->set('value', $value);
         $secondaryModel->set('model_id', $this->get($secondaryModelReference->getOurFieldName()));
         $secondaryModel->set('model_class', $secondaryModelReference->getOurModelClass());
@@ -111,11 +111,10 @@ trait SecondaryModelRelationTrait
     ): SecondaryModel {
         $this->assertIsLoaded();
         //will throw exception if ref does not exist
-        $secondaryModel = $this->ref($className);
+        $secondaryModel = $this->ref($className)->load($id);
         if (!$secondaryModel instanceof SecondaryModel) {
             throw new Exception(__FUNCTION__ . 'may be only used with SecondaryModel references');
         }
-        $secondaryModel->load($id);
         $secondaryModel->set('value', $value);
         foreach ($additionalValues as $fieldName => $fieldValue) {
             $secondaryModel->set($fieldName, $fieldValue);
@@ -134,15 +133,13 @@ trait SecondaryModelRelationTrait
     ): SecondaryModel {
         $this->assertIsLoaded();
         /** @var SecondaryModel $secondaryModel */
-        $secondaryModel = $this->ref($className);
+        $secondaryModel = $this->ref($className)->load($id);
         if (!$secondaryModel instanceof SecondaryModel) {
             throw new Exception(__FUNCTION__ . 'may be only used with SecondaryModel references');
         }
-        $secondaryModel->load($id);
-        $clone = clone $secondaryModel;
         $secondaryModel->delete();
 
-        return $clone;
+        return $secondaryModel;
     }
     /**
      * shortcut to get the first SecondaryModel Record if available. Handy if e.g. you want to load

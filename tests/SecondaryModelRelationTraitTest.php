@@ -3,11 +3,11 @@
 namespace secondarymodelforatk\tests;
 
 use Atk4\Data\Exception;
-use Atk4\Data\Persistence;
+use atkextendedtestcase\TestCase;
 use secondarymodelforatk\tests\testmodels\Admin;
+use secondarymodelforatk\tests\testmodels\Company;
 use secondarymodelforatk\tests\testmodels\Email;
 use secondarymodelforatk\tests\testmodels\Person;
-use atkextendedtestcase\TestCase;
 
 class SecondaryModelRelationTraitTest extends TestCase
 {
@@ -15,7 +15,8 @@ class SecondaryModelRelationTraitTest extends TestCase
     protected array $sqlitePersistenceModels = [
         Email::class,
         Person::class,
-        Admin::class
+        Admin::class,
+        Company::class
     ];
 
     public function testHasManyRelationIsAdded(): void
@@ -89,7 +90,7 @@ class SecondaryModelRelationTraitTest extends TestCase
     {
         $persistence = $this->getSqliteTestPersistence();
         $emailCount = (int)(new Email($persistence))->action('count')->getOne();
-        $model = (new Person($persistence))->createEntity();
+        $model = (new Company($persistence))->createEntity();
         $model->save();
         $model->addSecondaryModelRecord(Email::class, '1234567899');
         self::assertSame(
@@ -191,29 +192,20 @@ class SecondaryModelRelationTraitTest extends TestCase
     public function testDeleteSecondaryModelRecord(): void
     {
         $persistence = $this->getSqliteTestPersistence();
-        $model = (new Person($persistence))->createEntity();
-        $model->save();
-        $email = $model->addSecondaryModelRecord(Email::class, '1234567899');
-        $deletedEmail = $model->deleteSecondaryModelRecord(Email::class, $email->getId());
-
-        self::assertInstanceOf(
-            Email::class,
-            $deletedEmail
-        );
-
-        self::assertEquals(
-            $email->get('model_id'),
-            $deletedEmail->get('model_id')
-        );
+        $person = (new Person($persistence))->createEntity();
+        $person->save();
+        $email = $person->addSecondaryModelRecord(Email::class, '1234567899');
+        $emailId = $email->getId();
+        $person->deleteSecondaryModelRecord(Email::class, $email->getId());
 
         self::assertSame(
-            $email->get('model_class'),
-            $deletedEmail->get('model_class')
+            0,
+            (int)(new Email($persistence))->action('count')->getOne()
         );
 
-        $email->tryLoad($email->getId());
-
-        self::assertFalse($email->loaded());
+        $newEmail = (new Email($persistence));
+        self::expectExceptionMessage('Record with specified ID was not found');
+        $newEmail->load($emailId);
     }
 
     public function testExceptionThisNotLoadedUpdateSecondaryModelRecord(): void
@@ -236,8 +228,7 @@ class SecondaryModelRelationTraitTest extends TestCase
         $model = (new Person($persistence))->createEntity();
         $model->save();
         $return = $model->addSecondaryModelRecord(Email::class, '1234567899');
-        $email = $model->ref(Email::class);
-        $email->load($return->getId());
+        $email = $model->ref(Email::class)->load($return->getId());
         self::assertSame(
             [],
             $email->getDirtyRef()

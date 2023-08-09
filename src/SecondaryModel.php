@@ -62,21 +62,21 @@ abstract class SecondaryModel extends Model
      */
     public function getParentEntity(): Model
     {
+        /** @var class-string<Model> $className */
         $className = $this->get('model_class');
         if (!class_exists($className)) {
             throw new ClassNotExistsException('Class ' . $className . ' does not exist in ' . __FUNCTION__);
         }
 
-        /** @var Model $parentEntity */
-        $parentEntity = new $className($this->getPersistence());
         try {
-            $parentEntity->load($this->get('model_id'));
+            /** @var Model $parentEntity */
+            $parentEntity = (new $className($this->getPersistence()))->load($this->get('model_id'));
+            return $parentEntity;
         } catch (\Exception) {
             throw new ParentNotFoundException(
                 'Entity of class ' . $className . ' with ID ' . $this->get('model_id') . ' not found'
             );
         }
-        return $parentEntity;
     }
 
     /**

@@ -7,16 +7,23 @@ namespace secondarymodelforatk\tests\testmodels;
 use Atk4\Data\Model;
 use secondarymodelforatk\SecondaryModelRelationTrait;
 
-class Company extends Model {
+class Company extends Model
+{
 
     use SecondaryModelRelationTrait;
 
     public $table = 'company';
 
+    /**
+     * @return void
+     * @throws \Atk4\Core\Exception
+     * @throws \Atk4\Data\Exception
+     */
     protected function init(): void
     {
-         parent::init();
+        parent::init();
 
-         $this->addSecondaryModelHasMany(Email::class);
+        $this->addField('name');
+        $this->addSecondaryModelHasMany(Email::class);
     }
 }
