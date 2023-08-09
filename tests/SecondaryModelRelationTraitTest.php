@@ -40,7 +40,7 @@ class SecondaryModelRelationTraitTest extends TestCase
             $email->get('model_class')
         );
         self::assertEquals(
-            $model->get('id'),
+            $model->getId(),
             $email->get('model_id')
         );
     }
@@ -161,8 +161,8 @@ class SecondaryModelRelationTraitTest extends TestCase
         $result = $model->getFirstSecondaryModelRecord(Email::class);
         self::assertInstanceOf(Email::class, $result);
         self::assertSame(
-            $email->get('id'),
-            $result->get('id')
+            $email->getId(),
+            $result->getId()
         );
     }
 
@@ -241,7 +241,7 @@ class SecondaryModelRelationTraitTest extends TestCase
         $email = $model->addSecondaryModelRecord(Email::class, '1234567899');
         $updatedEmail = $model->updateSecondaryModelRecord(
             Email::class,
-            $email->get('id'),
+            $email->getId(),
             '987654321',
             ['some_other_field' => 'LALA']
         );
@@ -252,8 +252,8 @@ class SecondaryModelRelationTraitTest extends TestCase
         );
 
         self::assertSame(
-            $email->get('id'),
-            $updatedEmail->get('id')
+            $email->getId(),
+            $updatedEmail->getId()
         );
 
         $email->reload();
@@ -275,7 +275,7 @@ class SecondaryModelRelationTraitTest extends TestCase
         $model = new Person($persistence);
         $model->save();
         $email = $model->addSecondaryModelRecord(Email::class, '1234567899');
-        $deletedEmail = $model->deleteSecondaryModelRecord(Email::class, $email->get('id'));
+        $deletedEmail = $model->deleteSecondaryModelRecord(Email::class, $email->getId());
 
         self::assertInstanceOf(
             Email::class,
@@ -292,7 +292,7 @@ class SecondaryModelRelationTraitTest extends TestCase
             $deletedEmail->get('model_class')
         );
 
-        $email->tryLoad($email->get('id'));
+        $email->tryLoad($email->getId());
 
         self::assertFalse($email->loaded());
     }
@@ -360,7 +360,7 @@ class SecondaryModelRelationTraitTest extends TestCase
         $model->save();
         $return = $model->addSecondaryModelRecord(Email::class, '1234567899');
         $email = $model->ref(Email::class);
-        $email->load($return->get('id'));
+        $email->load($return->getId());
         self::assertSame(
             [],
             $email->dirty
