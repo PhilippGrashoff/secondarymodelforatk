@@ -32,7 +32,7 @@ class SecondaryModelTest extends TestCase
         self::assertSame($person->getId(), $parent->getId());
     }
 
-    public function testGetParentObjectExceptionInvalidModelClass(): void
+    public function testGetParentEntityExceptionInvalidModelClass(): void
     {
         $persistence = $this->getSqliteTestPersistence();
         $model = (new Person($persistence))->createEntity();

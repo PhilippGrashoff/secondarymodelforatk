@@ -44,7 +44,7 @@ abstract class SecondaryModel extends Model
         );
 
         //A parent model, when deleted, SHOULD delete all referenced SecondaryModels like Emails, Addresses, Files.
-        //However, periodically checking if parent object still exists is sensible to avoid having old data without
+        //However, periodically checking if parent entity still exists is sensible to avoid having old data without
         //existing parent models. This timestamp can be used to indicate the last time such a check happened.
         $this->addField(
             'last_checked',
@@ -56,7 +56,7 @@ abstract class SecondaryModel extends Model
     }
 
     /**
-     * tries to load its parent object based on model_class and model_id
+     * tries to load its parent entity based on model_class and model_id
      * @throws ParentNotFoundException
      * @throws ClassNotExistsException
      */
