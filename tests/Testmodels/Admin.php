@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace secondarymodelforatk\tests\testmodels;
+namespace PhilippR\Atk4\SecondaryModel\Tests\Testmodels;
 
 use Atk4\Core\Exception;
 use Atk4\Data\Model;
-use secondarymodelforatk\SecondaryModelRelationTrait;
+use PhilippR\Atk4\SecondaryModel\SecondaryModelRelationTrait;
 
 
 /**

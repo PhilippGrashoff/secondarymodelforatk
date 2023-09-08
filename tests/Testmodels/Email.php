@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace secondarymodelforatk\tests\testmodels;
+namespace PhilippR\Atk4\SecondaryModel\Tests\Testmodels;
 
-use secondarymodelforatk\SecondaryModel;
-use secondarymodelforatk\SecondaryModelRelationTrait;
+use PhilippR\Atk4\SecondaryModel\SecondaryModel;
+use PhilippR\Atk4\SecondaryModel\SecondaryModelRelationTrait;
 
 class Email extends SecondaryModel
 {

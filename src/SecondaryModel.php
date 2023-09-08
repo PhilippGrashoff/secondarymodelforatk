@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace secondarymodelforatk;
+namespace PhilippR\Atk4\SecondaryModel;
 
 use Atk4\Core\Exception;
 use Atk4\Data\Model;
@@ -9,18 +9,18 @@ use Atk4\Data\Model;
 abstract class SecondaryModel extends Model
 {
 
+    //no expressions, hence no reload needed
+    public bool $reloadAfterSave = false;
+
     protected function init(): void
     {
         parent::init();
-
-        //no expressions, hence no reload needed
-        $this->reloadAfterSave = false;
 
         //The class of the parent model e.g. \Some\NameSpace\SomeClass
         $this->addField(
             'model_class',
             [
-                'type' => 'text',
+                'type' => 'string',
                 'system' => true
             ]
         );

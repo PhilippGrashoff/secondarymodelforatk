@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace secondarymodelforatk;
+namespace PhilippR\Atk4\SecondaryModel;
 
 use Atk4\Data\Exception;
 use Atk4\Data\Model;
-use secondarymodelforatk\Reference\HasManySecondaryModel;
+use PhilippR\Atk4\SecondaryModel\Reference\HasManySecondaryModel;
 
 /**
  * @extends Model<Model>

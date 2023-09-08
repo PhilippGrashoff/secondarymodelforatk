@@ -1,28 +1,30 @@
 <?php declare(strict_types=1);
 
-namespace secondarymodelforatk\tests;
+namespace PhilippR\Atk4\SecondaryModel\tests;
 
-use atkextendedtestcase\TestCase;
-use secondarymodelforatk\ClassNotExistsException;
-use secondarymodelforatk\ParentNotFoundException;
-use secondarymodelforatk\tests\testmodels\Email;
-use secondarymodelforatk\tests\testmodels\Person;
+use Atk4\Data\Persistence\Sql;
+use Atk4\Data\Schema\TestCase;
+use PhilippR\Atk4\SecondaryModel\ClassNotExistsException;
+use PhilippR\Atk4\SecondaryModel\ParentNotFoundException;
+use PhilippR\Atk4\SecondaryModel\Tests\Testmodels\Email;
+use PhilippR\Atk4\SecondaryModel\Tests\Testmodels\Person;
 
 
 class SecondaryModelTest extends TestCase
 {
-
-    protected array $sqlitePersistenceModels = [
-        Person::class,
-        Email::class
-    ];
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->db = new Sql('sqlite::memory:');
+        $this->createMigrator(new Person($this->db))->create();
+        $this->createMigrator(new Email($this->db))->create();
+    }
 
     public function testGetParentEntity(): void
     {
-        $persistence = $this->getSqliteTestPersistence();
-        $person = (new Person($persistence))->createEntity();
+        $person = (new Person($this->db))->createEntity();
         $person->save();
-        $email = (new Email($persistence))->createEntity();
+        $email = (new Email($this->db))->createEntity();
         $email->set('model_class', Person::class);
         $email->set('model_id', $person->getId());
         $email->save();
@@ -34,10 +36,9 @@ class SecondaryModelTest extends TestCase
 
     public function testGetParentEntityExceptionInvalidModelClass(): void
     {
-        $persistence = $this->getSqliteTestPersistence();
-        $model = (new Person($persistence))->createEntity();
+        $model = (new Person($this->db))->createEntity();
         $model->save();
-        $email = (new Email($persistence))->createEntity();
+        $email = (new Email($this->db))->createEntity();
         $email->set('model_class', 'Duggu');
         $email->set('model_id', $model->getId());
         self::expectException(ClassNotExistsException::class);
@@ -46,8 +47,7 @@ class SecondaryModelTest extends TestCase
 
     public function testParentNotFoundException(): void
     {
-        $persistence = $this->getSqliteTestPersistence();
-        $email = (new Email($persistence))->createEntity();
+        $email = (new Email($this->db))->createEntity();
         $email->set('model_class', Person::class);
         $email->set('model_id', 333);
         $email->save();
@@ -57,10 +57,9 @@ class SecondaryModelTest extends TestCase
 
     public function testSetParentEntity(): void
     {
-        $persistence = $this->getSqliteTestPersistence();
-        $person = (new Person($persistence))->createEntity();
+        $person = (new Person($this->db))->createEntity();
         $person->save();
-        $email = (new Email($persistence))->createEntity();
+        $email = (new Email($this->db))->createEntity();
         $email->setParentEntity($person);
 
         self::assertSame($person->getId(), $email->get('model_id'));

@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace secondarymodelforatk;
+namespace PhilippR\Atk4\SecondaryModel;
 
 use Atk4\Core\Exception;
 
-class ParentNotFoundException extends Exception {}
+class ParentNotFoundException extends Exception
+{
+}

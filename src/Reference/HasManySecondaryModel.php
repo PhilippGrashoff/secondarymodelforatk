@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace secondarymodelforatk\Reference;
+namespace PhilippR\Atk4\SecondaryModel\Reference;
 
 use Atk4\Data\Reference\HasMany;
 

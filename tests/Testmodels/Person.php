@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace secondarymodelforatk\tests\testmodels;
+namespace PhilippR\Atk4\SecondaryModel\Tests\Testmodels;
 
+use Atk4\Data\Exception;
 use Atk4\Data\Model;
-use secondarymodelforatk\SecondaryModelRelationTrait;
+use PhilippR\Atk4\SecondaryModel\SecondaryModelRelationTrait;
 
 class Person extends Model
 {
@@ -17,7 +18,7 @@ class Person extends Model
     /**
      * @return void
      * @throws \Atk4\Core\Exception
-     * @throws \Atk4\Data\Exception
+     * @throws Exception
      */
     protected function init(): void
     {

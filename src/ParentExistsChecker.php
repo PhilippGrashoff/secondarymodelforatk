@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace secondarymodelforatk;
+namespace PhilippR\Atk4\SecondaryModel;
 
 use Atk4\Core\Exception;
 use DateTime;
@@ -27,7 +27,8 @@ class ParentExistsChecker
         $deletedRecords = [];
         $model->setLimit($amount);
         $model->setOrder(['last_checked' => 'asc', $model->idField => 'asc']);
-        foreach ($model as $entity) { /** @var SecondaryModel $entity */
+        foreach ($model as $entity) {
+            /** @var SecondaryModel $entity */
             try {
                 $entity->getParentEntity();
                 $entity->set('last_checked', new DateTime());
