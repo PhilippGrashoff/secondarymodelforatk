@@ -70,23 +70,18 @@ trait SecondaryModelRelationTrait
     /**
      * Add a new SecondaryModel record which is linked to $this, e.g. add an Email to a Person.
      * @param class-string<SecondaryModel> $className The className of the SecondaryModel
-     * @param string|int|float $value //each SecondaryModel has a value field. This content will be set to value field.
-     * @param array<string, string> $additionalValues //if additional field values should be set, use this optional array.
+     * @param array<string, string> $values //if additional field values should be set, use this optional array.
      *     ['some_other_field' => 'SomeValue', 'and_another_field' => 'AndSomeOtherValue']
      * @throws Exception|\Atk4\Core\Exception
      */
-    public function addSecondaryModelRecord(
-        string $className,
-        string|int|float $value,
-        array $additionalValues = []
-    ): SecondaryModel {
+    public function addSecondaryModelRecord(string $className, array $values = []): SecondaryModel
+    {
         /** @var HasManySecondaryModel $secondaryModelReference */
         $secondaryModelReference = $this->getModel()->getReference($className);
         $secondaryModel = (new $className($this->getPersistence()))->createEntity();
-        $secondaryModel->set('value', $value);
         $secondaryModel->set('model_id', $this->get($secondaryModelReference->getOurFieldName()));
         $secondaryModel->set('model_class', $secondaryModelReference->getOurModelClass());
-        foreach ($additionalValues as $fieldName => $fieldValue) {
+        foreach ($values as $fieldName => $fieldValue) {
             $secondaryModel->set($fieldName, $fieldValue);
         }
         $secondaryModel->save();
@@ -96,24 +91,18 @@ trait SecondaryModelRelationTrait
 
     /**
      * @param string $className
-     * @param string|int $id
-     * @param string|int|float $value
-     * @param array<string, string> $additionalValues
+     * @param int $id
+     * @param array<string, string> $values
      * @return SecondaryModel
      * @throws Exception
      * @throws \Atk4\Core\Exception
      */
-    public function updateSecondaryModelRecord(
-        string $className,
-        string|int $id,
-        string|int|float $value,
-        array $additionalValues = []
-    ): SecondaryModel {
+    public function updateSecondaryModelRecord(string $className, int $id, array $values = []): SecondaryModel
+    {
         $this->assertIsLoaded();
         /** @var SecondaryModel $secondaryModel */
         $secondaryModel = $this->ref($className)->load($id);
-        $secondaryModel->set('value', $value);
-        foreach ($additionalValues as $fieldName => $fieldValue) {
+        foreach ($values as $fieldName => $fieldValue) {
             $secondaryModel->set($fieldName, $fieldValue);
         }
         $secondaryModel->save();
@@ -124,10 +113,8 @@ trait SecondaryModelRelationTrait
     /**
      * @throws Exception
      */
-    public function deleteSecondaryModelRecord(
-        string $className,
-        string|int $id
-    ): SecondaryModel {
+    public function deleteSecondaryModelRecord(string $className, int $id): SecondaryModel
+    {
         $this->assertIsLoaded();
         /** @var SecondaryModel $secondaryModel */
         $secondaryModel = $this->ref($className)->load($id);
@@ -135,58 +122,4 @@ trait SecondaryModelRelationTrait
 
         return $secondaryModel;
     }
-    /**
-     * shortcut to get the first SecondaryModel Record if available. Handy if e.g. you want to load
-     * the first email existing for a person.
-     */
-    /*public function getFirstSecondaryModelRecord(string $className): ?SecondaryModel
-    {
-        $this->assertIsLoaded();
-
-        //will throw exception if ref does not exist
-        $secondaryModel = $this->ref($className);
-        $secondaryModel->tryLoadAny();
-
-        if (!$secondaryModel->loaded()) {
-            return null;
-        }
-
-        return $secondaryModel;
-    }
-
-    /**
-     * get the first value field that is not empty. Handy for e.g. getting the first Phone Number etc.
-     */
-    /*public function getFirstSecondaryModelValue(string $className): string
-    {
-        $this->assertIsLoaded();
-        //will throw exception if ref does not exist
-        $secondaryModel = $this->ref($className);
-        $secondaryModel->addCondition('value', '!=', null);
-        $secondaryModel->addCondition('value', '!=', '');
-        $secondaryModel->tryLoadAny();
-
-        if (!$secondaryModel->loaded()) {
-            return '';
-        }
-
-        return $secondaryModel->get('value');
-    }
-
-    /**
-     * get value field of all SecondaryModels as array. Handy as shortcut if e.g. you want to quickly get all
-     * email addresses of a user
-     */
-    /*public function getAllSecondaryModelValuesAsArray(string $className): array
-    {
-        $this->assertIsEntity();
-        return array_map(
-            function ($a) {
-                return $a['value'];
-            },
-            //will throw exception if ref does not exist
-            $this->ref($className)->export(['value'])
-        );
-    }
-    */
 }

@@ -24,7 +24,7 @@ class ParentExistsCheckerTest extends TestCase
     {
         $person = (new Person($this->db))->createEntity();
         $person->save();
-        $email = $person->addSecondaryModelRecord(Email::class, 'LALA');
+        $email = $person->addSecondaryModelRecord(Email::class, ['value' => 'LALA']);
         self::assertNull($email->get('last_checked'));
 
         $pec = new ParentExistsChecker();
@@ -40,15 +40,15 @@ class ParentExistsCheckerTest extends TestCase
     {
         $person1 = (new Person($this->db))->createEntity();
         $person1->save();
-        $email1 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
-        $email2 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
+        $email1 = $person1->addSecondaryModelRecord(Email::class,  ['value' => 'LALA']);
+        $email2 = $person1->addSecondaryModelRecord(Email::class,  ['value' => 'LALA']);
         $person2 = (new Person($this->db))->createEntity();
         $person2->save();
-        $email3 = $person2->addSecondaryModelRecord(Email::class, 'LALA');
-        $email4 = $person2->addSecondaryModelRecord(Email::class, 'LALA');
+        $email3 = $person2->addSecondaryModelRecord(Email::class,  ['value' => 'LALA']);
+        $email4 = $person2->addSecondaryModelRecord(Email::class,  ['value' => 'LALA']);
         $person3 = (new Person($this->db))->createEntity();
         $person3->save();
-        $email5 = $person3->addSecondaryModelRecord(Email::class, 'LALA');
+        $email5 = $person3->addSecondaryModelRecord(Email::class,  ['value' => 'LALA']);
         self::assertSame(
             5,
             (int)(new Email($this->db))->action('count')->getOne()
@@ -84,8 +84,8 @@ class ParentExistsCheckerTest extends TestCase
     {
         $person1 = (new Person($this->db))->createEntity();
         $person1->save();
-        $email1 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
-        $email2 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
+        $email1 = $person1->addSecondaryModelRecord(Email::class,  ['value' => 'LALA']);
+        $email2 = $person1->addSecondaryModelRecord(Email::class,  ['value' => 'LALA']);
 
         $pec = new ParentExistsChecker();
         $now = new DateTime();
@@ -122,8 +122,8 @@ class ParentExistsCheckerTest extends TestCase
     {
         $person1 = (new Person($this->db))->createEntity();
         $person1->save();
-        $email1 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
-        $email2 = $person1->addSecondaryModelRecord(Email::class, 'LALA');
+        $email1 = $person1->addSecondaryModelRecord(Email::class,  ['value' => 'LALA']);
+        $email2 = $person1->addSecondaryModelRecord(Email::class,  ['value' => 'LALA']);
 
         $pec = new ParentExistsChecker();
         $pec->deleteSecondaryModelsWithoutParent(new Email($this->db), 1);

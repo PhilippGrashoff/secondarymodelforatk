@@ -27,19 +27,10 @@ abstract class SecondaryModel extends Model
 
         //The ID of the parent model, e.g. 159
         $this->addField(
-
             'model_id',
             [
                 'type' => 'integer',
                 'system' => true
-            ]
-        );
-
-        //some generic value field for storing the actual data like an address or a phone
-        $this->addField(
-            'value',
-            [
-                'type' => 'text'
             ]
         );
 

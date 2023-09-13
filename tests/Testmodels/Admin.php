@@ -35,7 +35,7 @@ class Admin extends Model
         $this->addSecondaryModelHasMany(
             Email::class,
             false, //do not delete emails when admin record is deleted
-            Person::class, //link to this model
+            Person::class, //test link to a different model
             'person_id' //with this id
         );
     }
