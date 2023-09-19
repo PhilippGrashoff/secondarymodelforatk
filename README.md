@@ -1,5 +1,5 @@
 # secondarymodelforatk
-[![codecov](https://codecov.io/gh/PhilippGrashoff/secondarymodelforatk/branch/master/graph/badge.svg)](https://codecov.io/gh/PhilippGrashoff/secondarymodelforatk)
+[![codecov](https://codecov.io/gh/PhilippGrashoff/secondarymodelforatk/branch/main/graph/badge.svg)](https://codecov.io/gh/PhilippGrashoff/secondarymodelforatk)
 
 
 This repository is an extension for [atk4/data](https://github.com/atk4/data). The use case is as follows: You have a Model which can't exist sensibly on its own, e.g. an email address. Without the link to the person/company/somethingelse it belongs to, its pretty useless.
