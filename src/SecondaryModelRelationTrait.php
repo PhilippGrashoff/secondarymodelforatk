@@ -76,9 +76,10 @@ trait SecondaryModelRelationTrait
      */
     public function addSecondaryModelRecord(string $className, array $values = []): SecondaryModel
     {
+        $this->assertIsLoaded();
         /** @var HasManySecondaryModel $secondaryModelReference */
         $secondaryModelReference = $this->getModel()->getReference($className);
-        $secondaryModel = (new $className($this->getPersistence()))->createEntity();
+        $secondaryModel = (new $className($this->getModel()->getPersistence()))->createEntity();
         $secondaryModel->set('model_id', $this->get($secondaryModelReference->getOurFieldName()));
         $secondaryModel->set('model_class', $secondaryModelReference->getOurModelClass());
         foreach ($values as $fieldName => $fieldValue) {

@@ -53,6 +53,7 @@ abstract class SecondaryModel extends Model
      */
     public function getParentEntity(): Model
     {
+        $this->assertIsLoaded();
         /** @var class-string<Model> $className */
         $className = $this->get('model_class');
         if (!class_exists($className)) {
@@ -61,7 +62,7 @@ abstract class SecondaryModel extends Model
 
         try {
             /** @var Model $parentEntity */
-            $parentEntity = (new $className($this->getPersistence()))->load($this->get('model_id'));
+            $parentEntity = (new $className($this->getModel()->getPersistence()))->load($this->get('model_id'));
             return $parentEntity;
         } catch (\Exception) {
             throw new ParentNotFoundException(

@@ -84,14 +84,15 @@ class SecondaryModelRelationTraitTest extends TestCase
         );
     }
 
-    public function testaddSecondaryModelRecordExceptionInvalidClassName(): void
+    public function testAddSecondaryModelRecordExceptionInvalidClassName(): void
     {
         $model = (new Person($this->db))->createEntity();
+        $model->save();
         self::expectExceptionMessage('Child element not found');
         $model->addSecondaryModelRecord('SomeNonDescendantOfSecondaryModel', ['value' => 'somevalue']);
     }
 
-    public function testaddSecondaryModelRecordAddDeleteTrueDeletesSBM(): void
+    public function testAddSecondaryModelRecordAddDeleteTrueDeletesSBM(): void
     {
         $emailCount = (int)(new Email($this->db))->action('count')->getOne();
         $model = (new Company($this->db))->createEntity();
@@ -210,17 +211,24 @@ class SecondaryModelRelationTraitTest extends TestCase
         $newEmail->load($emailId);
     }
 
-    public function testExceptionThisNotLoadedUpdateSecondaryModelRecord(): void
+    public function testAssertIsLoadedAddSecondaryModelRecord(): void
     {
         $model1 = new Person($this->db);
-        self::expectException(Exception::class);
+        self::expectException(\TypeError::class);
+        $model1->addSecondaryModelRecord(Email::class,  ['value' => 'sdff']);
+    }
+
+    public function testAssertIsLoadedUpdateSecondaryModelRecord(): void
+    {
+        $model1 = new Person($this->db);
+        self::expectException(\TypeError::class);
         $model1->updateSecondaryModelRecord(Email::class, 1, ['value' => 'sdff']);
     }
 
-    public function testExceptionThisNotLoadedDeleteSecondaryModelRecord(): void
+    public function testAssertIsLoadedDeleteSecondaryModelRecord(): void
     {
         $model1 = new Person($this->db);
-        self::expectException(Exception::class);
+        self::expectException(\TypeError::class);
         $model1->deleteSecondaryModelRecord(Email::class, 1);
     }
 

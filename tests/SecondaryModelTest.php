@@ -41,6 +41,7 @@ class SecondaryModelTest extends TestCase
         $email = (new Email($this->db))->createEntity();
         $email->set('model_class', 'Duggu');
         $email->set('model_id', $model->getId());
+        $email->save();
         self::expectException(ClassNotExistsException::class);
         $email->getParentEntity();
     }
