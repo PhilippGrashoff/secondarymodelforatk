@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace PhilippR\Atk4\SecondaryModel\tests;
+namespace PhilippR\Atk4\SecondaryModel\Tests;
 
 use Atk4\Data\Persistence\Sql;
 use Atk4\Data\Schema\TestCase;

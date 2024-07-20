@@ -4,6 +4,7 @@ namespace PhilippR\Atk4\SecondaryModel;
 
 use Atk4\Core\Exception;
 use Atk4\Data\Model;
+use Throwable;
 
 
 abstract class SecondaryModel extends Model
@@ -29,7 +30,7 @@ abstract class SecondaryModel extends Model
         $this->addField(
             'model_id',
             [
-                'type' => 'integer',
+                'type' => 'bigint',
                 'system' => true
             ]
         );
@@ -49,7 +50,7 @@ abstract class SecondaryModel extends Model
     /**
      * tries to load its parent entity based on model_class and model_id
      * @throws ParentNotFoundException
-     * @throws ClassNotExistsException
+     * @throws ClassNotExistsException|\Atk4\Data\Exception
      */
     public function getParentEntity(): Model
     {
@@ -73,7 +74,7 @@ abstract class SecondaryModel extends Model
 
     /**
      * @throws Exception
-     * @throws \Atk4\Data\Exception
+     * @throws \Atk4\Data\Exception|Throwable
      */
     public function setParentEntity(Model $entity): void
     {
