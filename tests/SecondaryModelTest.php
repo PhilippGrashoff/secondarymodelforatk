@@ -26,7 +26,7 @@ class SecondaryModelTest extends TestCase
         $person->save();
         $email = (new Email($this->db))->createEntity();
         $email->set('model_class', Person::class);
-        $email->set('model_id', $person->getId());
+        $email->set('entity_id', $person->getId());
         $email->save();
         $parent = $email->getParentEntity();
         self::assertTrue($parent instanceof Person);
@@ -40,7 +40,7 @@ class SecondaryModelTest extends TestCase
         $model->save();
         $email = (new Email($this->db))->createEntity();
         $email->set('model_class', 'Duggu');
-        $email->set('model_id', $model->getId());
+        $email->set('entity_id', $model->getId());
         $email->save();
         self::expectException(ClassNotExistsException::class);
         $email->getParentEntity();
@@ -50,7 +50,7 @@ class SecondaryModelTest extends TestCase
     {
         $email = (new Email($this->db))->createEntity();
         $email->set('model_class', Person::class);
-        $email->set('model_id', 333);
+        $email->set('entity_id', 333);
         $email->save();
         self::expectException(ParentNotFoundException::class);
         $email->getParentEntity();
@@ -63,7 +63,7 @@ class SecondaryModelTest extends TestCase
         $email = (new Email($this->db))->createEntity();
         $email->setParentEntity($person);
 
-        self::assertSame($person->getId(), $email->get('model_id'));
+        self::assertSame($person->getId(), $email->get('entity_id'));
         self::assertSame(Person::class, $email->get('model_class'));
     }
 }

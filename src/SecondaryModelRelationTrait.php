@@ -22,7 +22,7 @@ trait SecondaryModelRelationTrait
      * @param bool $addDeleteHook if true, a hook to delete all linked SecondaryModels when record is deleted is added
      * @param string $ourClassName defaults to get_class($this). Set differently if you want model_class field of
      *     SecondaryModel filled differently.
-     * @param ?string $ourIdField defaults to $this->id_field. Set differently if you want model_id field of
+     * @param ?string $ourIdField defaults to $this->id_field. Set differently if you want entity_id field of
      *     SecondaryModel filled with the value of a different field.
      * @return HasManySecondaryModel
      * @throws Exception
@@ -46,7 +46,7 @@ trait SecondaryModelRelationTrait
                             ($ourClassName ?: get_class($this))
                         );
                 },
-                'theirField' => 'model_id',
+                'theirField' => 'entity_id',
                 'ourField' => $ourIdField === null ? $this->idField : $ourIdField,
                 'ourModelClass' => $ourClassName ?: get_class($this)
             ]
@@ -56,9 +56,9 @@ trait SecondaryModelRelationTrait
         if ($addDeleteHook) {
             $this->onHook(
                 Model::HOOK_BEFORE_DELETE,
-                function (self $model) use ($className) {
-                    foreach ($model->ref($className) as $sbm) {
-                        $sbm->delete();
+                function (self $entity) use ($className) {
+                    foreach ($entity->ref($className) as $secondaryModelEntity) {
+                        $secondaryModelEntity->delete();
                     }
                 }
             );
@@ -80,7 +80,7 @@ trait SecondaryModelRelationTrait
         /** @var HasManySecondaryModel $secondaryModelReference */
         $secondaryModelReference = $this->getModel()->getReference($className);
         $secondaryModel = (new $className($this->getModel()->getPersistence()))->createEntity();
-        $secondaryModel->set('model_id', $this->get($secondaryModelReference->getOurFieldName()));
+        $secondaryModel->set('entity_id', $this->get($secondaryModelReference->getOurFieldName()));
         $secondaryModel->set('model_class', $secondaryModelReference->getOurModelClass());
         foreach ($values as $fieldName => $fieldValue) {
             $secondaryModel->set($fieldName, $fieldValue);

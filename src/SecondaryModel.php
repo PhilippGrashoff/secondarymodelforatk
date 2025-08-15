@@ -26,9 +26,9 @@ abstract class SecondaryModel extends Model
             ]
         );
 
-        //The ID of the parent model, e.g. 159
+        //The ID of the parent entity, e.g. 159
         $this->addField(
-            'model_id',
+            'entity_id',
             [
                 'type' => 'bigint',
                 'system' => true
@@ -48,7 +48,7 @@ abstract class SecondaryModel extends Model
     }
 
     /**
-     * tries to load its parent entity based on model_class and model_id
+     * tries to load its parent entity based on model_class and entity_id
      * @throws ParentNotFoundException
      * @throws ClassNotExistsException|\Atk4\Data\Exception
      */
@@ -63,11 +63,11 @@ abstract class SecondaryModel extends Model
 
         try {
             /** @var Model $parentEntity */
-            $parentEntity = (new $className($this->getModel()->getPersistence()))->load($this->get('model_id'));
+            $parentEntity = (new $className($this->getModel()->getPersistence()))->load($this->get('entity_id'));
             return $parentEntity;
         } catch (\Exception) {
             throw new ParentNotFoundException(
-                'Entity of class ' . $className . ' with ID ' . $this->get('model_id') . ' not found'
+                'Entity of class ' . $className . ' with ID ' . $this->get('entity_id') . ' not found'
             );
         }
     }
@@ -80,6 +80,6 @@ abstract class SecondaryModel extends Model
     {
         $entity->assertIsLoaded();
         $this->set('model_class', get_class($entity));
-        $this->set('model_id', $entity->getId());
+        $this->set('entity_id', $entity->getId());
     }
 }

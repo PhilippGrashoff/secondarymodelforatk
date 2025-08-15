@@ -10,7 +10,7 @@ If you want to store all these emails in the same table, you need to save which 
 Example data of "email" table:
 
 ```
-id   value                model_class                 model_id
+id   value                model_class                 entity_id
 1    some@email.com       Your\Namespace\Person       4           <- This email belongs to person with Id 4
 2    another@email.com    Your\Namespace\Person       4           <- This one too
 3    andmore@email.com    Your\Namespace\Company      2           <- This one belongs to the company with id 2
@@ -20,7 +20,7 @@ This package helps you set up this with only a few lines of code. Check `tests\t
 
 
 # Installation
-The easiest way to use this repository is to add it to your composer.json in the require section:
+The easiest way to use this repository is to add it to your composer.json in the "require" section:
 ```json
 {
   "require": {

@@ -46,7 +46,7 @@ class SecondaryModelRelationTraitTest extends TestCase
         );
         self::assertEquals(
             $model->getId(),
-            $email->get('model_id')
+            $email->get('entity_id')
         );
     }
 
@@ -73,14 +73,14 @@ class SecondaryModelRelationTraitTest extends TestCase
         $model->set('person_id', 456);
         $model->save();
         $email = $model->addSecondaryModelRecord(Email::class, ['value' => 1234567899]);
-        //make sure token has correct model_class and model_id set
+        //make sure token has correct model_class and entity_id set
         self::assertSame(
             Person::class,
             $email->get('model_class')
         );
         self::assertEquals(
             456,
-            $email->get('model_id')
+            $email->get('entity_id')
         );
     }
 
