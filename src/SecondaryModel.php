@@ -17,7 +17,7 @@ abstract class SecondaryModel extends Model
     {
         parent::init();
 
-        //The class of the parent model e.g. \Some\NameSpace\SomeClass
+        //The class of the parent model e.g., \Some\NameSpace\SomeClass
         $this->addField(
             'model_class',
             [
@@ -26,7 +26,7 @@ abstract class SecondaryModel extends Model
             ]
         );
 
-        //The ID of the parent entity, e.g. 159
+        //The ID of the parent entity, e.g., 159
         $this->addField(
             'entity_id',
             [
@@ -36,7 +36,7 @@ abstract class SecondaryModel extends Model
         );
 
         //A parent model, when deleted, SHOULD delete all referenced SecondaryModels like Emails, Addresses, Files.
-        //However, periodically checking if parent entity still exists is sensible to avoid having old data without
+        //However, periodically checking if the parent entity still exists is sensible to avoid having old data without
         //existing parent models. This timestamp can be used to indicate the last time such a check happened.
         $this->addField(
             'last_checked',
@@ -76,10 +76,12 @@ abstract class SecondaryModel extends Model
      * @throws Exception
      * @throws \Atk4\Data\Exception|Throwable
      */
-    public function setParentEntity(Model $entity): void
+    public function setParentEntity(Model $entity): static
     {
         $entity->assertIsLoaded();
         $this->set('model_class', get_class($entity));
         $this->set('entity_id', $entity->getId());
+
+        return $this;
     }
 }
